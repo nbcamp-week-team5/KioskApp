@@ -6,6 +6,6 @@
 //
 
 struct MenuItem {
-    let item: ItemInfo
-    let isNew: Bool
+    let item: Item
+    var isNew: Bool
 }

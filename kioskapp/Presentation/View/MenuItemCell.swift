@@ -58,8 +58,7 @@ class MenuItemCell: UICollectionViewCell {
                 
         imageView.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
-            $0.width.equalTo(imageSize)
-            $0.height.equalTo(imageSize)
+            $0.width.height.equalTo(imageSize)
         }
         
         nameLabel.snp.makeConstraints {

@@ -8,8 +8,10 @@
 protocol CartUseCaseProtocol {
     func getCartItems() -> [CartItem]
     func addCartItem(_ cartItem: CartItem, amount: Int)
+    func deleteCartItem(_ cartItem: CartItem)
     func decreaseCartItemQuantity(_ cartItem: CartItem)
-    func removeAllCartItems(_ cartItem: CartItem)
+    func removeAllCartItems()
+    func getTotalCartItemPrice() -> Int
 }
 
 class CartUseCase: CartUseCaseProtocol {
@@ -46,7 +48,20 @@ class CartUseCase: CartUseCaseProtocol {
         }
     }
     
-    func removeAllCartItems(_ cartItem: CartItem) {
+    func deleteCartItem(_ cartItem: CartItem) {
+        let cartItems = cartRepository.getCartItems()
+        guard let existingItem = cartItems.first(where: { $0.item.id == cartItem.item.id }) else {
+            return
+        }
+        cartRepository.deleteCartItem(existingItem.item.id)
+    }
+    
+    func removeAllCartItems() {
         cartRepository.removeAllCartItems()
+    }
+    
+    func getTotalCartItemPrice() -> Int {
+        let cartItems = cartRepository.getCartItems()
+        return cartItems.map { $0.item.price * $0.amount }.reduce(0, +)
     }
 }

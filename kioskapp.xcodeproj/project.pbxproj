@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		58EC90BF2DA3A540006F03C4 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 58EC90BE2DA3A540006F03C4 /* .swiftlint.yml */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		58EC90742DA3A126006F03C4 /* kioskapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kioskapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		58EC90BE2DA3A540006F03C4 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,6 +50,7 @@
 		58EC906B2DA3A126006F03C4 = {
 			isa = PBXGroup;
 			children = (
+				58EC90BE2DA3A540006F03C4 /* .swiftlint.yml */,
 				58EC90762DA3A126006F03C4 /* kioskapp */,
 				58EC90752DA3A126006F03C4 /* Products */,
 			);
@@ -65,6 +71,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58EC90872DA3A127006F03C4 /* Build configuration list for PBXNativeTarget "kioskapp" */;
 			buildPhases = (
+				58EC90BD2DA3A4CE006F03C4 /* SwiftLint Script */,
 				58EC90702DA3A126006F03C4 /* Sources */,
 				58EC90712DA3A126006F03C4 /* Frameworks */,
 				58EC90722DA3A126006F03C4 /* Resources */,
@@ -122,10 +129,33 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58EC90BF2DA3A540006F03C4 /* .swiftlint.yml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		58EC90BD2DA3A4CE006F03C4 /* SwiftLint Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "SwiftLint Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint >/dev/null; then\n    swiftlint\nelse \n    echo \"[warning] SwiftLint not installed, download using `brew install swiftlint`\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		58EC90702DA3A126006F03C4 /* Sources */ = {
@@ -229,7 +259,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -292,7 +322,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

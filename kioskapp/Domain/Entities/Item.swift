@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ItemInfo {
+struct Item {
     let id: UUID
     let name: String
     let price: Int

@@ -6,6 +6,6 @@
 //
 
 struct CartItem {
-    let item: ItemInfo
-    let amount: Int
+    let item: Item
+    var amount: Int
 }

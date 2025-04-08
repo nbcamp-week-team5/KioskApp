@@ -11,7 +11,8 @@ import Then
 
 class MenuCartView: UIView {
     
-    private let scrollView = UIScrollView()
+    private let containerView = UIView()
+    
     private let cartTableView = UITableView()
     private let emptyLabel = UILabel()
     
@@ -36,9 +37,8 @@ class MenuCartView: UIView {
     }
     
     private func setStyle() {
-        scrollView.do {
-            $0.isScrollEnabled = true
-            $0.showsVerticalScrollIndicator = false
+        
+        containerView.do {
             $0.layer.borderColor = UIColor.lightGray.cgColor
             $0.layer.borderWidth = 1.0
             $0.layer.cornerRadius = 20
@@ -52,7 +52,7 @@ class MenuCartView: UIView {
             $0.backgroundColor = .white
             $0.rowHeight = 40
             $0.estimatedRowHeight = 40
-            $0.isScrollEnabled = false
+            $0.isScrollEnabled = true
         }
         
         emptyLabel.do {
@@ -83,11 +83,11 @@ class MenuCartView: UIView {
     }
     
     private func setUI() {
-        self.addSubview(scrollView)
+        self.addSubview(containerView)
         
-        scrollView.addSubview(cartHeader)
-        scrollView.addSubview(cartTableView)
-        scrollView.addSubview(emptyLabel)
+        containerView.addSubview(cartHeader)
+        containerView.addSubview(cartTableView)
+        containerView.addSubview(emptyLabel)
         
         [cartTitleLabel, cartAmount].forEach {
             cartHeader.addArrangedSubview($0)
@@ -95,9 +95,10 @@ class MenuCartView: UIView {
     }
     
     private func setLayout() {
-        scrollView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(18)
+        
+        containerView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
+            $0.trailing.leading.equalToSuperview().inset(18)
         }
         
         cartHeader.snp.makeConstraints {
@@ -114,47 +115,34 @@ class MenuCartView: UIView {
         
         cartTableView.snp.makeConstraints {
             $0.top.equalTo(cartHeader.snp.bottom).offset(8)
-            $0.leading.trailing.equalToSuperview()
-            $0.width.equalToSuperview()
-            $0.height.equalTo(cartRepository.getCartItems().count * 40)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
         
         emptyLabel.snp.makeConstraints {
             $0.center.equalToSuperview()
         }
-        
-        let contentHeight = cartHeader.bounds.height + cartTableView.bounds.height + 26
-        scrollView.contentSize = CGSize(width: scrollView.bounds.width, height: contentHeight)
     }
     
     func reloadCart() {
         cartTableView.reloadData()
         updateEmptyState()
         
-        cartTableView.snp.updateConstraints {
-            $0.height.equalTo(cartRepository.getCartItems().count * 40)
-        }
-        
-        let contentHeight = cartHeader.bounds.height + cartTableView.bounds.height + 26
-        scrollView.contentSize = CGSize(width: scrollView.bounds.width, height: contentHeight)
+        let cartAmountValue = cartRepository.getCartItems().reduce(0) { $0 + $1.amount }
+        cartAmount.text = "총 \(cartAmountValue)개"
         
         if !cartRepository.getCartItems().isEmpty {
             let lastIndex = IndexPath(row: cartRepository.getCartItems().count - 1, section: 0)
             cartTableView.scrollToRow(at: lastIndex, at: .bottom, animated: true)
         }
         
-        var cartAmountValue = 0
-        cartRepository.getCartItems().forEach { cartAmountValue += $0.amount }
-        
-        cartAmount.text = "총 \(cartAmountValue)개"
-        
         self.layoutIfNeeded()
     }
     
     private func updateEmptyState() {
-        UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve, animations: {
+        UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
             self.emptyLabel.isHidden = !self.cartRepository.getCartItems().isEmpty
             self.cartTableView.isHidden = self.cartRepository.getCartItems().isEmpty
+            self.cartHeader.isHidden = self.cartRepository.getCartItems().isEmpty
         }, completion: nil)
     }
 }

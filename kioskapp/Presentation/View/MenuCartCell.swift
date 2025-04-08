@@ -121,12 +121,10 @@ class MenuCartCell: UITableViewCell {
     }
     
     @objc private func minusClicked() {
-        print("Minus button tapped")
         delegate?.didTapMinus(on: self)
     }
     
     @objc private func plusClicked() {
-        print("Plus button tapped")
         delegate?.didTapPlus(on: self)
     }
     

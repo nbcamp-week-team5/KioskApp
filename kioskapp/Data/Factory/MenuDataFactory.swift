@@ -9,7 +9,7 @@ import Foundation
 struct MenuDataFactory {
     static func makeMenuData() -> MenuData {
         return MenuData(menu: [
-            MenuCategory(category: "burger", items: [
+            MenuCategory(category: .burger, items: [
                 MenuItem(
                     item: Item(id: UUID(), name: "더블 1955", image: "db1955", price: 9000),
                     isNew: true
@@ -30,17 +30,17 @@ struct MenuDataFactory {
                 MenuItem(item: Item(id: UUID(), name: "불고기 버거", image: "bulgogi", price: 3000), isNew: true),
                 MenuItem(item: Item(id: UUID(), name: "치즈 버거", image: "cheese", price: 3000), isNew: true)
             ]),
-            MenuCategory(category: "dessert", items: [
+            MenuCategory(category: .dessert, items: [
                 MenuItem(item: Item(id: UUID(), name: "아이스크림콘", image: "cone", price: 1000), isNew: true),
                 MenuItem(item: Item(id: UUID(), name: "오레오 맥플러리", image: "flurry", price: 2500), isNew: true),
                 MenuItem(item: Item(id: UUID(), name: "바닐라 선데이", image: "sundae", price: 2000), isNew: true)
             ]),
-            MenuCategory(category: "drinks", items: [
+            MenuCategory(category: .drink, items: [
                 MenuItem(item: Item(id: UUID(), name: "콜라", image: "cola", price: 1000), isNew: true),
                 MenuItem(item: Item(id: UUID(), name: "환타", image: "fanta", price: 1000), isNew: true),
                 MenuItem(item: Item(id: UUID(), name: "스프라이트", image: "sprite", price: 1000), isNew: true)
             ]),
-            MenuCategory(category: "side", items: [
+            MenuCategory(category: .side, items: [
                 MenuItem(
                     item: Item(id: UUID(), name: "치즈스틱", image: "cheeseStick", price: 2000),
                     isNew: true

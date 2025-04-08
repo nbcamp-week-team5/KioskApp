@@ -122,17 +122,18 @@ class MenuCartView: UIView {
             $0.center.equalToSuperview()
         }
     }
-    
-    func reloadCart() {
+        
+    func reloadCart(_ cartItem: CartItem? = nil) {
         cartTableView.reloadData()
         updateEmptyState()
         
         let cartAmountValue = cartRepository.getCartItems().reduce(0) { $0 + $1.amount }
         cartAmount.text = "총 \(cartAmountValue)개"
-        
-        if !cartRepository.getCartItems().isEmpty {
-            let lastIndex = IndexPath(row: cartRepository.getCartItems().count - 1, section: 0)
-            cartTableView.scrollToRow(at: lastIndex, at: .bottom, animated: true)
+                
+        if let cartItem = cartItem,
+           let selectedIndex = cartRepository.getCartItems().firstIndex(where: { $0.item.id == cartItem.item.id }) {
+            let indexPath = IndexPath(row: selectedIndex, section: 0)
+            cartTableView.scrollToRow(at: indexPath, at: .top, animated: true)
         }
         
         self.layoutIfNeeded()

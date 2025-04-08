@@ -103,12 +103,12 @@ extension MenuView: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath)
-
+        
         // 클릭 애니메이션
         UIView.animate(withDuration: 0.1,
                        animations: {
             cell?.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
-    }, completion: { _ in
+        }, completion: { _ in
             UIView.animate(withDuration: 0.1) {
                 cell?.transform = CGAffineTransform.identity
             }
@@ -117,7 +117,7 @@ extension MenuView: UICollectionViewDataSource, UICollectionViewDelegate {
         let item = menuData.items[indexPath.item]
         let cartItem = CartItem(item: item.item, amount: 1)
         viewModel.addCartItem(cartItem, by: 1)
-        menuCartView?.reloadCart()
+        menuCartView?.reloadCart(cartItem)
     }
 }
 

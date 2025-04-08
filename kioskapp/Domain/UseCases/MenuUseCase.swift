@@ -6,17 +6,17 @@
 //
 
 protocol MenuUseCaseProtocol {
-    func getMenuItems() -> [MenuItem]
+    func getMenuItems() -> MenuData
 }
 
 class MenuUseCase: MenuUseCaseProtocol {
     private let menuRepository: MenuRepositoryProtocol
-    
+
     init(menuRepository: MenuRepositoryProtocol) {
         self.menuRepository = menuRepository
     }
-    
-    func getMenuItems() -> [MenuItem] {
+
+    func getMenuItems() -> MenuData {
         return menuRepository.getMenuItems()
     }
 }

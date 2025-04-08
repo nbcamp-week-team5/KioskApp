@@ -50,7 +50,7 @@ class KioskMainController: UIViewController {
         
         menuView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
-            $0.height.equalTo(300)
+            $0.bottom.equalTo(menuCartView.snp.top)
         }
         
         menuCartView.snp.makeConstraints {

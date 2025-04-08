@@ -38,6 +38,7 @@ class MenuCartView: UIView {
     private func setStyle() {
         scrollView.do {
             $0.isScrollEnabled = true
+            $0.showsVerticalScrollIndicator = false
             $0.layer.borderColor = UIColor.lightGray.cgColor
             $0.layer.borderWidth = 1.0
             $0.layer.cornerRadius = 20
@@ -49,9 +50,9 @@ class MenuCartView: UIView {
             $0.register(MenuCartCell.self, forCellReuseIdentifier: MenuCartCell.identifier)
             $0.separatorStyle = .singleLine
             $0.backgroundColor = .white
-            $0.rowHeight = 80
-            $0.estimatedRowHeight = 80
-            $0.isScrollEnabled = true
+            $0.rowHeight = 40
+            $0.estimatedRowHeight = 40
+            $0.isScrollEnabled = false
         }
         
         emptyLabel.do {
@@ -115,12 +116,15 @@ class MenuCartView: UIView {
             $0.top.equalTo(cartHeader.snp.bottom).offset(8)
             $0.leading.trailing.equalToSuperview()
             $0.width.equalToSuperview()
-            $0.height.equalTo(cartRepository.getCartItems().count * 80)
+            $0.height.equalTo(cartRepository.getCartItems().count * 40)
         }
         
         emptyLabel.snp.makeConstraints {
             $0.center.equalToSuperview()
         }
+        
+        let contentHeight = cartHeader.bounds.height + cartTableView.bounds.height + 26
+        scrollView.contentSize = CGSize(width: scrollView.bounds.width, height: contentHeight)
     }
     
     func reloadCart() {
@@ -130,6 +134,9 @@ class MenuCartView: UIView {
         cartTableView.snp.updateConstraints {
             $0.height.equalTo(cartRepository.getCartItems().count * 40)
         }
+        
+        let contentHeight = cartHeader.bounds.height + cartTableView.bounds.height + 26
+        scrollView.contentSize = CGSize(width: scrollView.bounds.width, height: contentHeight)
         
         if !cartRepository.getCartItems().isEmpty {
             let lastIndex = IndexPath(row: cartRepository.getCartItems().count - 1, section: 0)

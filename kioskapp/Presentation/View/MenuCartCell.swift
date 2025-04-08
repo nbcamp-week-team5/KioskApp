@@ -12,19 +12,18 @@ import Then
 class MenuCartCell: UITableViewCell {
     
     static let identifier = "MenuCartCell"
-    let menuData = MenuData.sampleData.menu[0]
-            
+    let menuData = MenuDataFactory.makeMenuData().menu[0]
+    
     private let nameLabel = UILabel()
     private let minusButton = UIButton()
     private let plusButton = UIButton()
     private let quantityLabel = UILabel()
     private let priceLabel = UILabel()
     private let cartStackView = UIStackView()
-
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        configure(menuData.items[0])
+       
         setStyle()
         setUI()
         setLayout()
@@ -40,7 +39,7 @@ class MenuCartCell: UITableViewCell {
             $0.axis = .horizontal
             $0.distribution = .equalSpacing
         }
-      
+
         nameLabel.do {
             $0.font = .systemFont(ofSize: 16, weight: .medium)
             $0.textAlignment = .center
@@ -111,16 +110,16 @@ class MenuCartCell: UITableViewCell {
     }
     
     @objc func minusClicked() {
-//        decreaseCartItemQuantity()
+        //        decreaseCartItemQuantity()
     }
     
     @objc func plusClicked() {
-//        increaseCartItemQuantity()
+        //        increaseCartItemQuantity()
     }
     
     func configure(_ item: MenuItem) {
-        nameLabel.text = item.name
-        priceLabel.text = String(item.price) + "원"
+        nameLabel.text = item.item.name
+        priceLabel.text = "\(item.item.price)원"
     }
 }
 

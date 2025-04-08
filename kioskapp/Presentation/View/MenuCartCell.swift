@@ -12,6 +12,7 @@ import Then
 class MenuCartCell: UITableViewCell {
     
     static let identifier = "MenuCartCell"
+    let menuData = MenuDataFactory.makeMenuData().menu[0]
     
     private let nameLabel = UILabel()
     private let minusButton = UIButton()

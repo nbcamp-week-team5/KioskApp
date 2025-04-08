@@ -7,5 +7,6 @@
 
 struct MenuItem {
     let item: Item
+    let category: String
     var isNew: Bool
 }

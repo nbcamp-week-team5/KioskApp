@@ -1,4 +1,3 @@
-//
 //  MenuCartCell.swift
 //  kioskapp
 //
@@ -9,10 +8,16 @@ import UIKit
 import SnapKit
 import Then
 
+protocol MenuCartCellDelegate: AnyObject {
+    func didTapPlus(on cell: MenuCartCell)
+    func didTapMinus(on cell: MenuCartCell)
+}
+
 class MenuCartCell: UITableViewCell {
     
     static let identifier = "MenuCartCell"
-    let menuData = MenuDataFactory.makeMenuData().menu[0]
+    
+    weak var delegate: MenuCartCellDelegate?
     
     private let nameLabel = UILabel()
     private let minusButton = UIButton()
@@ -23,7 +28,7 @@ class MenuCartCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-       
+        
         setStyle()
         setUI()
         setLayout()
@@ -39,7 +44,7 @@ class MenuCartCell: UITableViewCell {
             $0.axis = .horizontal
             $0.distribution = .equalSpacing
         }
-
+        
         nameLabel.do {
             $0.font = .systemFont(ofSize: 16, weight: .medium)
             $0.textAlignment = .center
@@ -68,15 +73,13 @@ class MenuCartCell: UITableViewCell {
     }
     
     private func setUI() {
+        self.addSubview(nameLabel)
+        self.addSubview(priceLabel)
+        self.addSubview(cartStackView)
         
-        [cartStackView].forEach {
-            self.addSubview($0)
+        [minusButton, quantityLabel, plusButton].forEach {
+            cartStackView.addArrangedSubview($0)
         }
-        
-        [nameLabel, minusButton, quantityLabel, plusButton, priceLabel].forEach {
-            self.addSubview($0)
-        }
-        
     }
     
     private func setLayout() {
@@ -87,7 +90,9 @@ class MenuCartCell: UITableViewCell {
         }
         
         cartStackView.snp.makeConstraints {
-            $0.center.equalToSuperview()
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(nameLabel.snp.trailing).offset(10)
+            $0.trailing.equalTo(priceLabel.snp.leading).offset(-10)
         }
         
         minusButton.snp.makeConstraints {
@@ -110,16 +115,17 @@ class MenuCartCell: UITableViewCell {
     }
     
     @objc func minusClicked() {
-        //        decreaseCartItemQuantity()
+        delegate?.didTapMinus(on: self)
     }
     
     @objc func plusClicked() {
-        //        increaseCartItemQuantity()
+        delegate?.didTapPlus(on: self)
     }
     
-    func configure(_ item: MenuItem) {
+    func configure(_ item: CartItem) {
         nameLabel.text = item.item.name
-        priceLabel.text = "\(item.item.price)원"
+        priceLabel.text = "\(item.item.price * item.amount)원"
+        quantityLabel.text = "\(item.amount)"
     }
 }
 

@@ -38,8 +38,6 @@ class MenuCartView: UIView {
     private func setStyle() {
         scrollView.do {
             $0.isScrollEnabled = true
-            $0.showsVerticalScrollIndicator = true
-            $0.showsHorizontalScrollIndicator = false
             $0.layer.borderColor = UIColor.lightGray.cgColor
             $0.layer.borderWidth = 1.0
             $0.layer.cornerRadius = 20
@@ -51,9 +49,9 @@ class MenuCartView: UIView {
             $0.register(MenuCartCell.self, forCellReuseIdentifier: MenuCartCell.identifier)
             $0.separatorStyle = .singleLine
             $0.backgroundColor = .white
-            $0.rowHeight = 40
-            $0.estimatedRowHeight = 40
-            $0.isScrollEnabled = false
+            $0.rowHeight = 80
+            $0.estimatedRowHeight = 80
+            $0.isScrollEnabled = true
         }
         
         emptyLabel.do {
@@ -97,7 +95,8 @@ class MenuCartView: UIView {
     
     private func setLayout() {
         scrollView.snp.makeConstraints {
-            $0.edges.equalToSuperview().inset(18)
+            $0.leading.trailing.equalToSuperview().inset(18)
+            $0.top.bottom.equalToSuperview()
         }
         
         cartHeader.snp.makeConstraints {
@@ -116,7 +115,7 @@ class MenuCartView: UIView {
             $0.top.equalTo(cartHeader.snp.bottom).offset(8)
             $0.leading.trailing.equalToSuperview()
             $0.width.equalToSuperview()
-            $0.height.equalTo(cartRepository.getCartItems().count * 40)
+            $0.height.equalTo(cartRepository.getCartItems().count * 80)
         }
         
         emptyLabel.snp.makeConstraints {
@@ -132,13 +131,21 @@ class MenuCartView: UIView {
             $0.height.equalTo(cartRepository.getCartItems().count * 40)
         }
         
-        cartAmount.text = "총 \(cartRepository.getCartItems().count)개"
+        if !cartRepository.getCartItems().isEmpty {
+            let lastIndex = IndexPath(row: cartRepository.getCartItems().count - 1, section: 0)
+            cartTableView.scrollToRow(at: lastIndex, at: .bottom, animated: true)
+        }
+        
+        var cartAmountValue = 0
+        cartRepository.getCartItems().forEach { cartAmountValue += $0.amount }
+        
+        cartAmount.text = "총 \(cartAmountValue)개"
         
         self.layoutIfNeeded()
     }
     
     private func updateEmptyState() {
-        UIView.transition(with: self, duration: 0.3, animations: {
+        UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve, animations: {
             self.emptyLabel.isHidden = !self.cartRepository.getCartItems().isEmpty
             self.cartTableView.isHidden = self.cartRepository.getCartItems().isEmpty
         }, completion: nil)
@@ -175,6 +182,7 @@ extension MenuCartView: MenuCartCellDelegate {
         let updatedItem = CartItem(item: item.item, amount: item.amount + 1)
         cartRepository.updateCartItem(updatedItem)
         reloadCart()
+        print(cartRepository.getCartItems())
     }
     
     func didTapMinus(on cell: MenuCartCell) {

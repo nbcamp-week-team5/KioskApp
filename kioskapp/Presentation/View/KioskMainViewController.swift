@@ -3,11 +3,19 @@ import SnapKit
 import Then
 
 class KioskMainController: UIViewController {
-
+    
+    private let cartRepository: CartRepositoryProtocol = CartRepository()
+    private lazy var menuView = MenuView(
+        frame: .zero,
+        viewModel: KioskMainViewModel(
+            menuUseCase: MenuUseCase(menuRepository: MenuRepository()),
+            cartUseCase: CartUseCase(cartRepository: cartRepository)
+        )
+    )
+    private lazy var menuCartView = MenuCartView(cartRepository: cartRepository)
+    
     private let scrollView = UIScrollView()
     private let contentStack = UIStackView()
-    private let menuView = MenuView()
-    private let menuCartView = MenuCartView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +36,7 @@ class KioskMainController: UIViewController {
             $0.axis = .vertical
         }
     }
-
+    
     private func setUI() {
         view.backgroundColor = .white
         
@@ -57,8 +65,6 @@ class KioskMainController: UIViewController {
             $0.height.equalTo(500)
         }
         
-        
-       
         menuCartView.snp.makeConstraints {
             $0.top.equalTo(menuView.snp.bottom).offset(10)
             $0.leading.trailing.equalToSuperview()

@@ -76,8 +76,8 @@ class MenuItemCell: UICollectionViewCell {
     }
     
     func configure(with item: MenuItem) {
-        nameLabel.text = item.name
-        priceLabel.text = String(item.price) + "원"
-        menuImageView.image = UIImage(named: item.imageName)
+        nameLabel.text = item.item.name
+        priceLabel.text = "\(item.item.price)원"
+        menuImageView.image = UIImage(named: item.item.image)
     }
 }

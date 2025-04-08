@@ -11,7 +11,7 @@ import Then
 
 class MenuView: UIView {
     
-    let menuData = MenuData.sampleData.menu[0]
+    let menuData = MenuDataFactory.makeMenuData().menu[0]
     private var menuCart = MenuCartView().menuCart
     var currentIndex: Int = 0
     private let pageControl = UIPageControl()
@@ -95,7 +95,7 @@ extension MenuView: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = menuData.items[indexPath.item]
-        menuCart.append(MenuItem(name: item.name, imageName: item.imageName, price: item.price))
+        menuCart.append(item)
         print(menuCart)
     }
 }

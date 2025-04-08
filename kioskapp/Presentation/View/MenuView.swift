@@ -12,6 +12,7 @@ import Then
 class MenuView: UIView {
     
     let menuData = MenuDataFactory.makeMenuData().menu[0]
+
     private var menuCart = MenuCartView().menuCart
     var currentIndex: Int = 0
     private let pageControl = UIPageControl()

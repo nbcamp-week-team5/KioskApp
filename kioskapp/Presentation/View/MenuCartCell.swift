@@ -23,8 +23,7 @@ class MenuCartCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        
+       
         setStyle()
         setUI()
         setLayout()
@@ -40,7 +39,7 @@ class MenuCartCell: UITableViewCell {
             $0.axis = .horizontal
             $0.distribution = .equalSpacing
         }
-        
+
         nameLabel.do {
             $0.font = .systemFont(ofSize: 16, weight: .medium)
             $0.textAlignment = .center
@@ -122,7 +121,6 @@ class MenuCartCell: UITableViewCell {
         nameLabel.text = item.item.name
         priceLabel.text = "\(item.item.price)원"
     }
-    
 }
 
 #Preview {

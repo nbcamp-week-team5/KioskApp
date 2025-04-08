@@ -39,44 +39,53 @@ class MenuCartCell: UITableViewCell {
     }
     
     private func setStyle() {
-        
+        self.selectionStyle = .none
+    
         cartStackView.do {
             $0.axis = .horizontal
             $0.distribution = .equalSpacing
+            $0.spacing = 10
         }
         
         nameLabel.do {
             $0.font = .systemFont(ofSize: 16, weight: .medium)
-            $0.textAlignment = .center
+            $0.textAlignment = .left
         }
         
         minusButton.do {
-            $0.setTitle("-", for: .normal)
+            $0.setImage(UIImage(systemName: "minus.circle.fill"), for: .normal)
+            $0.tintColor = .systemGray
+            $0.contentVerticalAlignment = .fill
+            $0.contentHorizontalAlignment = .fill
             $0.addTarget(self, action: #selector(minusClicked), for: .touchUpInside)
+            $0.isUserInteractionEnabled = true
         }
         
         plusButton.do {
-            $0.setTitle("+", for: .normal)
+            $0.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
+            $0.tintColor = .systemGray
+            $0.contentVerticalAlignment = .fill
+            $0.contentHorizontalAlignment = .fill
             $0.addTarget(self, action: #selector(plusClicked), for: .touchUpInside)
+            $0.isUserInteractionEnabled = true
         }
         
         quantityLabel.do {
-            $0.text = "1"
             $0.font = .systemFont(ofSize: 16, weight: .medium)
             $0.textAlignment = .center
         }
         
         priceLabel.do {
             $0.font = .systemFont(ofSize: 16, weight: .medium)
-            $0.textAlignment = .center
+            $0.textAlignment = .right
         }
     }
     
     private func setUI() {
-        self.addSubview(nameLabel)
-        self.addSubview(priceLabel)
-        self.addSubview(cartStackView)
-        
+        contentView.addSubview(nameLabel)
+        contentView.addSubview(cartStackView)
+        contentView.addSubview(priceLabel)
+
         [minusButton, quantityLabel, plusButton].forEach {
             cartStackView.addArrangedSubview($0)
         }
@@ -84,41 +93,40 @@ class MenuCartCell: UITableViewCell {
     
     private func setLayout() {
         nameLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(10)
+            $0.leading.equalToSuperview().offset(16)
             $0.centerY.equalToSuperview()
-            $0.width.equalTo(100)
         }
         
         cartStackView.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.leading.equalTo(nameLabel.snp.trailing).offset(10)
-            $0.trailing.equalTo(priceLabel.snp.leading).offset(-10)
+            $0.centerY.centerX.equalToSuperview()
+           
         }
         
         minusButton.snp.makeConstraints {
-            $0.width.height.equalTo(30)
+            $0.width.height.equalTo(20)
         }
         
         quantityLabel.snp.makeConstraints {
-            $0.width.equalTo(30)
+            $0.width.equalTo(20)
         }
         
         plusButton.snp.makeConstraints {
-            $0.width.height.equalTo(30)
+            $0.width.height.equalTo(20)
         }
         
         priceLabel.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-10)
+            $0.trailing.equalToSuperview().offset(-16)
             $0.centerY.equalToSuperview()
-            $0.width.equalTo(100)
         }
     }
     
-    @objc func minusClicked() {
+    @objc private func minusClicked() {
+        print("Minus button tapped")
         delegate?.didTapMinus(on: self)
     }
     
-    @objc func plusClicked() {
+    @objc private func plusClicked() {
+        print("Plus button tapped")
         delegate?.didTapPlus(on: self)
     }
     

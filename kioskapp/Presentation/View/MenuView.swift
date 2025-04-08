@@ -17,6 +17,7 @@ class MenuView: UIView {
     
     private let viewModel: KioskMainViewModel
     private let pageControl = UIPageControl()
+    private weak var menuCartView: MenuCartView?
     
     private let menuCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.scrollDirection = .horizontal
@@ -24,8 +25,9 @@ class MenuView: UIView {
         $0.minimumInteritemSpacing = 0
     })
     
-    init(frame: CGRect, viewModel: KioskMainViewModel) {
+    init(frame: CGRect, viewModel: KioskMainViewModel, menuCartView: MenuCartView) {
         self.viewModel = viewModel
+        self.menuCartView = menuCartView
         super.init(frame: frame)
         setStyle()
         setUI()
@@ -103,6 +105,7 @@ extension MenuView: UICollectionViewDataSource, UICollectionViewDelegate {
         let item = menuData.items[indexPath.item]
         let cartItem = CartItem(item: item.item, amount: 1)
         viewModel.addCartItem(cartItem, by: 1)
+        menuCartView?.reloadCart()
     }
 }
 
@@ -149,4 +152,3 @@ extension MenuView: UIScrollViewDelegate {
         pageControl.currentPage = currentIndex
     }
 }
-

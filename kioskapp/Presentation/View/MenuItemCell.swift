@@ -1,28 +1,19 @@
-//
-//  MenuItemCell.swift
-//  kioskapp
-//
-//  Created by 정근호 on 4/7/25.
-//
-
 import UIKit
 import SnapKit
 import Then
 
 class MenuItemCell: UICollectionViewCell {
+    
     static let identifier = "MenuItemCell"
-    let menuData = MenuData.sampleData.menu[0]
     
-    private let imageSize: CGFloat = 100
-    
-    private let imageView = UIImageView()
+    private let menuImageView = UIImageView()
     private let nameLabel = UILabel()
     private let priceLabel = UILabel()
+    private let stackView = UIStackView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        configure(menuData.items[0])
         setStyle()
         setUI()
         setLayout()
@@ -33,52 +24,60 @@ class MenuItemCell: UICollectionViewCell {
     }
     
     private func setStyle() {
-        imageView.do {
+        contentView.backgroundColor = .white
+        
+        menuImageView.do {
             $0.contentMode = .scaleAspectFit
+            $0.layer.cornerRadius = 8
+            $0.clipsToBounds = true
         }
         
         nameLabel.do {
-            $0.font = .systemFont(ofSize: 20, weight: .bold)
+            $0.font = .systemFont(ofSize: 14, weight: .medium)
             $0.textAlignment = .center
+            $0.textColor = .black
         }
         
         priceLabel.do {
-            $0.font = .systemFont(ofSize: 16, weight: .medium)
+            $0.font = .systemFont(ofSize: 14, weight: .medium)
             $0.textAlignment = .center
+            $0.textColor = .black
+        }
+        
+        stackView.do {
+            $0.axis = .vertical
+            $0.spacing = 5
+            $0.alignment = .fill
+            $0.distribution = .fillEqually
         }
     }
     
     private func setUI() {
-        [imageView, nameLabel, priceLabel].forEach {
-            self.addSubview($0)
-        }
+        contentView.addSubview(menuImageView)
+        contentView.addSubview(stackView)
+        
+        stackView.addArrangedSubview(nameLabel)
+        stackView.addArrangedSubview(priceLabel)
     }
     
     private func setLayout() {
-                
-        imageView.snp.makeConstraints {
-            $0.centerX.centerY.equalToSuperview()
-            $0.width.height.equalTo(imageSize)
+        menuImageView.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(16)
+            $0.leading.equalToSuperview().offset(16)
+            $0.trailing.equalToSuperview().offset(-16)
         }
         
-        nameLabel.snp.makeConstraints {
-            $0.top.equalTo(imageView.snp.bottom)
-            $0.centerX.equalToSuperview()
-        }
-        
-        priceLabel.snp.makeConstraints {
-            $0.top.equalTo(nameLabel.snp.bottom).offset(1)
-            $0.centerX.equalToSuperview()
+        stackView.snp.makeConstraints {
+            $0.top.equalTo(menuImageView.snp.bottom).offset(-16)
+            $0.leading.equalToSuperview().offset(16)
+            $0.trailing.equalToSuperview().offset(-16)
+            $0.bottom.equalToSuperview().offset(-16)
         }
     }
     
-    func configure(_ item: MenuItem) {
-        imageView.image = UIImage(named: item.imageName)
+    func configure(with item: MenuItem) {
         nameLabel.text = item.name
         priceLabel.text = String(item.price) + "원"
+        menuImageView.image = UIImage(named: item.imageName)
     }
-}
-
-#Preview {
-    MenuItemCell()
 }

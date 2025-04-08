@@ -46,7 +46,7 @@ class MenuItemCell: UICollectionViewCell {
         
         stackView.do {
             $0.axis = .vertical
-            $0.spacing = 5
+            $0.spacing = 1
             $0.alignment = .fill
             $0.distribution = .fillEqually
         }

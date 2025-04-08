@@ -12,9 +12,10 @@ import Then
 class MenuView: UIView {
     
     let menuData = MenuDataFactory.makeMenuData().menu[0]
-
-    private var menuCart = MenuCartView().menuCart
+    
     var currentIndex: Int = 0
+    
+    private let viewModel: KioskMainViewModel
     private let pageControl = UIPageControl()
     
     private let menuCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
@@ -23,7 +24,8 @@ class MenuView: UIView {
         $0.minimumInteritemSpacing = 0
     })
     
-    override init(frame: CGRect) {
+    init(frame: CGRect, viewModel: KioskMainViewModel) {
+        self.viewModel = viewModel
         super.init(frame: frame)
         setStyle()
         setUI()
@@ -31,7 +33,7 @@ class MenuView: UIView {
     }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func setStyle() {
@@ -40,6 +42,9 @@ class MenuView: UIView {
             $0.delegate = self
             $0.showsHorizontalScrollIndicator = false
             $0.register(MenuItemCell.self, forCellWithReuseIdentifier: "MenuItemCell")
+            $0.layer.borderColor = UIColor.lightGray.cgColor
+            $0.layer.borderWidth = 1.0
+            $0.layer.cornerRadius = 20
         }
         
         pageControl.do {
@@ -59,12 +64,12 @@ class MenuView: UIView {
     
     private func setLayout() {
         menuCollectionView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.edges.equalToSuperview().inset(18)
         }
         
         pageControl.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(24)
         }
     }
     
@@ -96,8 +101,8 @@ extension MenuView: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = menuData.items[indexPath.item]
-        menuCart.append(item)
-        print(menuCart)
+        let cartItem = CartItem(item: item.item, amount: 1)
+        viewModel.addCartItem(cartItem, by: 1)
     }
 }
 
@@ -144,6 +149,4 @@ extension MenuView: UIScrollViewDelegate {
         pageControl.currentPage = currentIndex
     }
 }
-#Preview {
-    MenuView()
-}
+

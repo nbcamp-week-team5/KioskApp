@@ -15,7 +15,7 @@ class KioskMainViewModel {
         }
     }
 
-    var onCartItemsUpdated: (([CartItem]) -> Void)?
+    var onCartItemsUpdated: (([CartItem]) -> Void)? 
 
     init(menuUseCase: MenuUseCaseProtocol,cartUseCase: CartUseCaseProtocol) {
         self.menuUseCase = menuUseCase

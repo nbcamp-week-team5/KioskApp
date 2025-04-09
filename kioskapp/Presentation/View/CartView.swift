@@ -9,8 +9,7 @@ import UIKit
 import SnapKit
 import Then
 
-class MenuCartView: UIView {
-    
+class CartView: UIView {
     private let containerView = UIView()
     
     private let cartTableView = UITableView()
@@ -20,16 +19,17 @@ class MenuCartView: UIView {
     private let cartTitleLabel = UILabel()
     private let cartAmount = UILabel()
     
-    private let cartRepository: CartRepositoryProtocol
+    private var viewModel: KioskMainViewModel
     
-    init(cartRepository: CartRepositoryProtocol) {
-        self.cartRepository = cartRepository
+    private let delegate: CartViewDelegate
+    
+    init(viewModel: KioskMainViewModel) {
+        self.viewModel = viewModel
+        self.delegate = CartViewDelegate(viewModel: viewModel, cartTableView: cartTableView)
         super.init(frame: .zero)
-        
         setStyle()
         setUI()
         setLayout()
-        reloadCart()
     }
     
     required init?(coder: NSCoder) {
@@ -37,7 +37,6 @@ class MenuCartView: UIView {
     }
     
     private func setStyle() {
-        
         containerView.do {
             $0.layer.borderColor = UIColor.lightGray.cgColor
             $0.layer.borderWidth = 1.0
@@ -45,9 +44,9 @@ class MenuCartView: UIView {
         }
         
         cartTableView.do {
-            $0.delegate = self
-            $0.dataSource = self
-            $0.register(MenuCartCell.self, forCellReuseIdentifier: MenuCartCell.identifier)
+            $0.delegate = delegate
+            $0.dataSource = delegate
+            $0.register(CartCell.self, forCellReuseIdentifier: CartCell.identifier)
             $0.separatorStyle = .singleLine
             $0.backgroundColor = .white
             $0.rowHeight = 40
@@ -76,7 +75,7 @@ class MenuCartView: UIView {
         }
         
         cartAmount.do {
-            $0.text = "총 \(cartRepository.getCartItems().count)개"
+            $0.text = "총 \(viewModel.getCartItems().count)개"
             $0.font = .systemFont(ofSize: 20, weight: .medium)
             $0.textColor = .black
         }
@@ -84,7 +83,7 @@ class MenuCartView: UIView {
     
     private func setUI() {
         self.addSubview(containerView)
-        
+
         containerView.addSubview(cartHeader)
         containerView.addSubview(cartTableView)
         containerView.addSubview(emptyLabel)
@@ -95,7 +94,6 @@ class MenuCartView: UIView {
     }
     
     private func setLayout() {
-        
         containerView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
             $0.trailing.leading.equalToSuperview().inset(18)
@@ -127,11 +125,13 @@ class MenuCartView: UIView {
         cartTableView.reloadData()
         updateEmptyState()
         
-        let cartAmountValue = cartRepository.getCartItems().reduce(0) { $0 + $1.amount }
+        let cartAmountValue = viewModel.getCartItems().reduce(0) { $0 + $1.amount }
         cartAmount.text = "총 \(cartAmountValue)개"
                 
         if let cartItem = cartItem,
-           let selectedIndex = cartRepository.getCartItems().firstIndex(where: { $0.item.id == cartItem.item.id }) {
+           let selectedIndex = viewModel.getCartItems().firstIndex(
+            where: { $0.item.id == cartItem.item.id }
+           ) {
             let indexPath = IndexPath(row: selectedIndex, section: 0)
             cartTableView.scrollToRow(at: indexPath, at: .top, animated: true)
         }
@@ -141,55 +141,9 @@ class MenuCartView: UIView {
     
     private func updateEmptyState() {
         UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
-            self.emptyLabel.isHidden = !self.cartRepository.getCartItems().isEmpty
-            self.cartTableView.isHidden = self.cartRepository.getCartItems().isEmpty
-            self.cartHeader.isHidden = self.cartRepository.getCartItems().isEmpty
+            self.emptyLabel.isHidden = !self.viewModel.getCartItems().isEmpty
+            self.cartTableView.isHidden = self.viewModel.getCartItems().isEmpty
+            self.cartHeader.isHidden = self.viewModel.getCartItems().isEmpty
         }, completion: nil)
-    }
-}
-
-extension MenuCartView: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 40
-    }
-}
-
-extension MenuCartView: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cartRepository.getCartItems().count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MenuCartCell.identifier, for: indexPath) as? MenuCartCell else {
-            return UITableViewCell()
-        }
-        let cartItems = cartRepository.getCartItems()
-        let cartItem = cartItems[indexPath.row]
-        cell.configure(cartItem)
-        cell.delegate = self
-        return cell
-    }
-}
-
-extension MenuCartView: MenuCartCellDelegate {
-    func didTapPlus(on cell: MenuCartCell) {
-        guard let indexPath = cartTableView.indexPath(for: cell) else { return }
-        let item = cartRepository.getCartItems()[indexPath.row]
-        let updatedItem = CartItem(item: item.item, amount: item.amount + 1)
-        cartRepository.updateCartItem(updatedItem)
-        reloadCart()
-        print(cartRepository.getCartItems())
-    }
-    
-    func didTapMinus(on cell: MenuCartCell) {
-        guard let indexPath = cartTableView.indexPath(for: cell) else { return }
-        let item = cartRepository.getCartItems()[indexPath.row]
-        if item.amount <= 1 {
-            cartRepository.deleteCartItem(item.item.id)
-        } else {
-            let updatedItem = CartItem(item: item.item, amount: item.amount - 1)
-            cartRepository.updateCartItem(updatedItem)
-        }
-        reloadCart()
     }
 }

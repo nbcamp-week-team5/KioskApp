@@ -9,11 +9,11 @@ import SnapKit
 import Then
 
 protocol MenuCartCellDelegate: AnyObject {
-    func didTapPlus(on cell: MenuCartCell)
-    func didTapMinus(on cell: MenuCartCell)
+    func didTapPlus(on cell: CartCell)
+    func didTapMinus(on cell: CartCell)
 }
 
-class MenuCartCell: UITableViewCell {
+class CartCell: UITableViewCell {
     
     static let identifier = "MenuCartCell"
     
@@ -133,8 +133,4 @@ class MenuCartCell: UITableViewCell {
         priceLabel.text = "\(item.item.price * item.amount)원"
         quantityLabel.text = "\(item.amount)"
     }
-}
-
-#Preview {
-    MenuItemCell()
 }

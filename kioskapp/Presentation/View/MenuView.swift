@@ -9,13 +9,7 @@ import UIKit
 import SnapKit
 import Then
 
-protocol MenuViewDelegate: AnyObject {
-    func addCartItem(menuItem item: MenuItem)
-}
-
-class MenuView: UIView {
-    weak var delegate: MenuViewDelegate?
-    
+class MenuView: UIView {    
     var menuItems: [MenuItem] = []
         
     var currentIndex: Int = 0
@@ -28,8 +22,11 @@ class MenuView: UIView {
         $0.minimumInteritemSpacing = 0
     })
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    private let viewModel: KioskMainViewModel
+    
+    init(viewModel: KioskMainViewModel) {
+        self.viewModel = viewModel
+        super.init(frame: .zero)
         setStyle()
         setUI()
         setLayout()
@@ -116,7 +113,8 @@ extension MenuView: UICollectionViewDataSource, UICollectionViewDelegate {
         })
         
         let menuItem = menuItems[indexPath.item]
-        delegate?.addCartItem(menuItem: menuItem)
+        let cartItem = CartItem(item: menuItem.item, amount: 1)
+        viewModel.addCartItem(cartItem, by: 1)
     }
 }
 

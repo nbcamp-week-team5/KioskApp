@@ -10,7 +10,6 @@ import SnapKit
 import Then
 
 class MenuCartView: UIView {
-    
     private let containerView = UIView()
     
     private let cartTableView = UITableView()
@@ -28,7 +27,6 @@ class MenuCartView: UIView {
         setStyle()
         setUI()
         setLayout()
-        reloadCart()
     }
     
     required init?(coder: NSCoder) {
@@ -36,7 +34,6 @@ class MenuCartView: UIView {
     }
     
     private func setStyle() {
-        
         containerView.do {
             $0.layer.borderColor = UIColor.lightGray.cgColor
             $0.layer.borderWidth = 1.0
@@ -83,7 +80,7 @@ class MenuCartView: UIView {
     
     private func setUI() {
         self.addSubview(containerView)
-        
+
         containerView.addSubview(cartHeader)
         containerView.addSubview(cartTableView)
         containerView.addSubview(emptyLabel)
@@ -94,7 +91,6 @@ class MenuCartView: UIView {
     }
     
     private func setLayout() {
-        
         containerView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
             $0.trailing.leading.equalToSuperview().inset(18)
@@ -175,7 +171,6 @@ extension MenuCartView: MenuCartCellDelegate {
         guard let indexPath = cartTableView.indexPath(for: cell) else { return }
         let cartItem = viewModel.getCartItems()[indexPath.row]
         viewModel.increaseCartItemQuantity(cartItem)
-        reloadCart()
     }
     
     func didTapMinus(on cell: MenuCartCell) {
@@ -186,6 +181,5 @@ extension MenuCartView: MenuCartCellDelegate {
         } else {
             viewModel.decreaseCartItemQuantity(cartItem)
         }
-        reloadCart()
     }
 }

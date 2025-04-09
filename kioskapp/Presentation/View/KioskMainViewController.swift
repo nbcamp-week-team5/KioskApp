@@ -4,43 +4,33 @@ import Then
 
 class KioskMainController: UIViewController {
     
-    private let sharedCartRepository = CartRepository()
+    private let viewModel = KioskMainViewModel(
+        menuUseCase: MenuUseCase(menuRepository: MenuRepository()),
+        cartUseCase: CartUseCase(cartRepository: CartRepository())
+    )
 
-    private var menuCartView: MenuCartView!
-    private var viewModel: KioskMainViewModel!
-    
-    private lazy var menuView: MenuView = {
-        let view = MenuView()
-        view.delegate = self
-        return view
-    }()
+    private lazy var menuView = MenuView(viewModel: viewModel)
+    private lazy var menuCartView = MenuCartView(viewModel: viewModel)
     
     private let contentStack = UIStackView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        setupDependencies()
         bindViewModel()
         setStyle()
         setUI()
         setLayout()
     }
     
-    private func setupDependencies() {
-        viewModel = KioskMainViewModel(
-            menuUseCase: MenuUseCase(menuRepository: MenuRepository()),
-            cartUseCase: CartUseCase(cartRepository: sharedCartRepository)
-        )
-        menuCartView = MenuCartView(viewModel: viewModel)
-    }
-    
     private func bindViewModel() {
         menuView.menuItems = viewModel.getMenuItems().menu[0].items
+        viewModel.onCartItemsUpdated = { [weak self] _ in
+            guard let self else { return }
+            self.menuCartView.reloadCart()
+        }
     }
     
     private func setStyle() {
-        
         contentStack.do {
             $0.axis = .vertical
         }
@@ -57,7 +47,6 @@ class KioskMainController: UIViewController {
     }
     
     private func setLayout() {
-        
         contentStack.snp.makeConstraints {
             $0.edges.equalTo(view.safeAreaLayoutGuide)
         }
@@ -72,13 +61,5 @@ class KioskMainController: UIViewController {
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(250)
         }
-    }
-}
-
-extension KioskMainController: MenuViewDelegate {
-    func addCartItem(menuItem item: MenuItem) {
-        let cartItem = CartItem(item: item.item, amount: 1)
-        viewModel.addCartItem(cartItem, by: 1)
-        menuCartView.reloadCart(cartItem)
     }
 }

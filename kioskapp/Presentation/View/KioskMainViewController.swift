@@ -3,7 +3,6 @@ import SnapKit
 import Then
 
 class KioskMainController: UIViewController {
-    
     private let cartRepository: CartRepositoryProtocol = CartRepository()
     private lazy var menuCartView = MenuCartView(cartRepository: cartRepository)
     private lazy var menuView = MenuView(

@@ -11,36 +11,48 @@ import Then
 
 class MenuCartView: UIView {
     
+    private let containerView = UIView()
+    
     private let cartTableView = UITableView()
     private let emptyLabel = UILabel()
     
-    var menuCart = [MenuItem]() {
-        didSet {
-            cartTableView.reloadData()
-            updateEmptyState()
-        }
-    }
+    private let cartHeader = UIStackView()
+    private let cartTitleLabel = UILabel()
+    private let cartAmount = UILabel()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    private let cartRepository: CartRepositoryProtocol
+    
+    init(cartRepository: CartRepositoryProtocol) {
+        self.cartRepository = cartRepository
+        super.init(frame: .zero)
         
         setStyle()
         setUI()
         setLayout()
+        reloadCart()
     }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func setStyle() {
+        
+        containerView.do {
+            $0.layer.borderColor = UIColor.lightGray.cgColor
+            $0.layer.borderWidth = 1.0
+            $0.layer.cornerRadius = 20
+        }
+        
         cartTableView.do {
             $0.delegate = self
             $0.dataSource = self
             $0.register(MenuCartCell.self, forCellReuseIdentifier: MenuCartCell.identifier)
             $0.separatorStyle = .singleLine
             $0.backgroundColor = .white
-            $0.rowHeight = 50
+            $0.rowHeight = 40
+            $0.estimatedRowHeight = 40
+            $0.isScrollEnabled = true
         }
         
         emptyLabel.do {
@@ -50,50 +62,134 @@ class MenuCartView: UIView {
             $0.text = "장바구니가 비어 있습니다."
             $0.isHidden = true
         }
+        
+        cartHeader.do {
+            $0.axis = .horizontal
+            $0.distribution = .fill
+            $0.spacing = 10
+        }
+        
+        cartTitleLabel.do {
+            $0.text = "장바구니"
+            $0.font = .systemFont(ofSize: 20, weight: .medium)
+            $0.textColor = .black
+        }
+        
+        cartAmount.do {
+            $0.text = "총 \(cartRepository.getCartItems().count)개"
+            $0.font = .systemFont(ofSize: 20, weight: .medium)
+            $0.textColor = .black
+        }
     }
     
     private func setUI() {
-        self.addSubview(cartTableView)
-        self.addSubview(emptyLabel)
+        self.addSubview(containerView)
+        
+        containerView.addSubview(cartHeader)
+        containerView.addSubview(cartTableView)
+        containerView.addSubview(emptyLabel)
+        
+        [cartTitleLabel, cartAmount].forEach {
+            cartHeader.addArrangedSubview($0)
+        }
     }
     
     private func setLayout() {
+        
+        containerView.snp.makeConstraints {
+            $0.top.bottom.equalToSuperview()
+            $0.trailing.leading.equalToSuperview().inset(18)
+        }
+        
+        cartHeader.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview().inset(18)
+        }
+        
+        cartTitleLabel.snp.makeConstraints {
+            $0.leading.equalToSuperview()
+        }
+        
+        cartAmount.snp.makeConstraints {
+            $0.trailing.equalToSuperview()
+        }
+        
         cartTableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.equalTo(cartHeader.snp.bottom).offset(8)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
         
         emptyLabel.snp.makeConstraints {
             $0.center.equalToSuperview()
         }
     }
-    
-    func addMenuItem(_ item: MenuItem) {
-        menuCart.append(item)
+        
+    func reloadCart(_ cartItem: CartItem? = nil) {
+        cartTableView.reloadData()
+        updateEmptyState()
+        
+        let cartAmountValue = cartRepository.getCartItems().reduce(0) { $0 + $1.amount }
+        cartAmount.text = "총 \(cartAmountValue)개"
+                
+        if let cartItem = cartItem,
+           let selectedIndex = cartRepository.getCartItems().firstIndex(where: { $0.item.id == cartItem.item.id }) {
+            let indexPath = IndexPath(row: selectedIndex, section: 0)
+            cartTableView.scrollToRow(at: indexPath, at: .top, animated: true)
+        }
+        
+        self.layoutIfNeeded()
     }
     
     private func updateEmptyState() {
-        UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve, animations: {
-            self.emptyLabel.isHidden = !self.menuCart.isEmpty
-            self.cartTableView.isHidden = self.menuCart.isEmpty
+        UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
+            self.emptyLabel.isHidden = !self.cartRepository.getCartItems().isEmpty
+            self.cartTableView.isHidden = self.cartRepository.getCartItems().isEmpty
+            self.cartHeader.isHidden = self.cartRepository.getCartItems().isEmpty
         }, completion: nil)
     }
 }
 
 extension MenuCartView: UITableViewDelegate {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1 // 섹션 수는 1로 고정
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 40
     }
 }
 
 extension MenuCartView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return menuCart.count
+        return cartRepository.getCartItems().count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: MenuCartCell.identifier, for: indexPath) as! MenuCartCell
-        let item = menuCart[indexPath.row]
-        cell.configure(item)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MenuCartCell.identifier, for: indexPath) as? MenuCartCell else {
+            return UITableViewCell()
+        }
+        let cartItems = cartRepository.getCartItems()
+        let cartItem = cartItems[indexPath.row]
+        cell.configure(cartItem)
+        cell.delegate = self
         return cell
+    }
+}
+
+extension MenuCartView: MenuCartCellDelegate {
+    func didTapPlus(on cell: MenuCartCell) {
+        guard let indexPath = cartTableView.indexPath(for: cell) else { return }
+        let item = cartRepository.getCartItems()[indexPath.row]
+        let updatedItem = CartItem(item: item.item, amount: item.amount + 1)
+        cartRepository.updateCartItem(updatedItem)
+        reloadCart()
+        print(cartRepository.getCartItems())
+    }
+    
+    func didTapMinus(on cell: MenuCartCell) {
+        guard let indexPath = cartTableView.indexPath(for: cell) else { return }
+        let item = cartRepository.getCartItems()[indexPath.row]
+        if item.amount <= 1 {
+            cartRepository.deleteCartItem(item.item.id)
+        } else {
+            let updatedItem = CartItem(item: item.item, amount: item.amount - 1)
+            cartRepository.updateCartItem(updatedItem)
+        }
+        reloadCart()
     }
 }

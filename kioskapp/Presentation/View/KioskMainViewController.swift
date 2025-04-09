@@ -3,11 +3,19 @@ import SnapKit
 import Then
 
 class KioskMainController: UIViewController {
-
-    private let scrollView = UIScrollView()
+    
+    private let cartRepository: CartRepositoryProtocol = CartRepository()
+    private lazy var menuCartView = MenuCartView(cartRepository: cartRepository)
+    private lazy var menuView = MenuView(
+        frame: .zero,
+        viewModel: KioskMainViewModel(
+            menuUseCase: MenuUseCase(menuRepository: MenuRepository()),
+            cartUseCase: CartUseCase(cartRepository: cartRepository)
+        ),
+        menuCartView: menuCartView
+    )
+    
     private let contentStack = UIStackView()
-    private let menuView = MenuView()
-    private let menuCartView = MenuCartView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,23 +26,16 @@ class KioskMainController: UIViewController {
     }
     
     private func setStyle() {
-        scrollView.do {
-            $0.isScrollEnabled = true
-            $0.showsHorizontalScrollIndicator = false
-            $0.showsVerticalScrollIndicator = false
-        }
         
         contentStack.do {
             $0.axis = .vertical
         }
     }
-
+    
     private func setUI() {
         view.backgroundColor = .white
-        
-        view.addSubview(scrollView)
-        
-        scrollView.addSubview(contentStack)
+                
+        view.addSubview(contentStack)
         
         [menuView, menuCartView].forEach {
             contentStack.addArrangedSubview($0)
@@ -43,26 +44,19 @@ class KioskMainController: UIViewController {
     
     private func setLayout() {
         
-        scrollView.snp.makeConstraints {
-            $0.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-        
         contentStack.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-            $0.width.equalToSuperview()
+            $0.edges.equalTo(view.safeAreaLayoutGuide)
         }
         
         menuView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
-            $0.height.equalTo(500)
+            $0.bottom.equalTo(menuCartView.snp.top)
         }
         
-        
-       
         menuCartView.snp.makeConstraints {
-            $0.top.equalTo(menuView.snp.bottom).offset(10)
+            $0.top.equalTo(menuView.snp.bottom)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(200)
+            $0.height.equalTo(250)
         }
     }
 }

@@ -8,7 +8,10 @@ class KioskMainController: UIViewController {
         menuUseCase: MenuUseCase(menuRepository: MenuRepository()),
         cartUseCase: CartUseCase(cartRepository: CartRepository())
     )
-    private lazy var menuView = MenuView(viewModel: viewModel)
+    private lazy var menuView = MenuView(
+        viewModel: viewModel,
+        menuItems: viewModel.getMenuItems().menu[0].items
+    )
     private lazy var cartView = CartView(viewModel: viewModel)
     
     private let contentStack = UIStackView()
@@ -22,7 +25,6 @@ class KioskMainController: UIViewController {
     }
     
     private func bindViewModel() {
-        menuView.menuItems = viewModel.getMenuItems().menu[0].items
         viewModel.onCartItemsUpdated = { [weak self] _ in
             guard let self else { return }
             self.cartView.reloadCart()

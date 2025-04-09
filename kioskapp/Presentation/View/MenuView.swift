@@ -41,7 +41,7 @@ class MenuView: UIView {
             $0.dataSource = self
             $0.delegate = self
             $0.showsHorizontalScrollIndicator = false
-            $0.register(MenuItemCell.self, forCellWithReuseIdentifier: "MenuItemCell")
+            $0.register(MenuCell.self, forCellWithReuseIdentifier: "MenuItemCell")
             $0.layer.borderColor = UIColor.lightGray.cgColor
             $0.layer.borderWidth = 1.0
             $0.layer.cornerRadius = 20
@@ -91,7 +91,7 @@ extension MenuView: UICollectionViewDataSource, UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuItemCell", for: indexPath) as? MenuItemCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuItemCell", for: indexPath) as? MenuCell else {
             fatalError("Failed to load cell!")
         }
         let item = menuItems[indexPath.item]

@@ -8,9 +8,8 @@ class KioskMainController: UIViewController {
         menuUseCase: MenuUseCase(menuRepository: MenuRepository()),
         cartUseCase: CartUseCase(cartRepository: CartRepository())
     )
-
     private lazy var menuView = MenuView(viewModel: viewModel)
-    private lazy var menuCartView = MenuCartView(viewModel: viewModel)
+    private lazy var cartView = CartView(viewModel: viewModel)
     
     private let contentStack = UIStackView()
     
@@ -26,7 +25,7 @@ class KioskMainController: UIViewController {
         menuView.menuItems = viewModel.getMenuItems().menu[0].items
         viewModel.onCartItemsUpdated = { [weak self] _ in
             guard let self else { return }
-            self.menuCartView.reloadCart()
+            self.cartView.reloadCart()
         }
     }
     
@@ -41,7 +40,7 @@ class KioskMainController: UIViewController {
                 
         view.addSubview(contentStack)
         
-        [menuView, menuCartView].forEach {
+        [menuView, cartView].forEach {
             contentStack.addArrangedSubview($0)
         }
     }
@@ -53,10 +52,10 @@ class KioskMainController: UIViewController {
         
         menuView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(menuCartView.snp.top)
+            $0.bottom.equalTo(cartView.snp.top)
         }
         
-        menuCartView.snp.makeConstraints {
+        cartView.snp.makeConstraints {
             $0.top.equalTo(menuView.snp.bottom)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(250)

@@ -2,7 +2,7 @@ import UIKit
 import SnapKit
 import Then
 
-class MenuItemCell: UICollectionViewCell {
+class MenuCell: UICollectionViewCell {
     
     static let identifier = "MenuItemCell"
     

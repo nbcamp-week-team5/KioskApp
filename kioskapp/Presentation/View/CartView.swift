@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import Then
 
-class MenuCartView: UIView {
+class CartView: UIView {
     private let containerView = UIView()
     
     private let cartTableView = UITableView()
@@ -43,7 +43,7 @@ class MenuCartView: UIView {
         cartTableView.do {
             $0.delegate = self
             $0.dataSource = self
-            $0.register(MenuCartCell.self, forCellReuseIdentifier: MenuCartCell.identifier)
+            $0.register(CartCell.self, forCellReuseIdentifier: CartCell.identifier)
             $0.separatorStyle = .singleLine
             $0.backgroundColor = .white
             $0.rowHeight = 40
@@ -143,19 +143,19 @@ class MenuCartView: UIView {
     }
 }
 
-extension MenuCartView: UITableViewDelegate {
+extension CartView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 40
     }
 }
 
-extension MenuCartView: UITableViewDataSource {
+extension CartView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.getCartItems().count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MenuCartCell.identifier, for: indexPath) as? MenuCartCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CartCell.identifier, for: indexPath) as? CartCell else {
             return UITableViewCell()
         }
         let cartItems = viewModel.getCartItems()
@@ -166,14 +166,14 @@ extension MenuCartView: UITableViewDataSource {
     }
 }
 
-extension MenuCartView: MenuCartCellDelegate {
-    func didTapPlus(on cell: MenuCartCell) {
+extension CartView: MenuCartCellDelegate {
+    func didTapPlus(on cell: CartCell) {
         guard let indexPath = cartTableView.indexPath(for: cell) else { return }
         let cartItem = viewModel.getCartItems()[indexPath.row]
         viewModel.increaseCartItemQuantity(cartItem)
     }
     
-    func didTapMinus(on cell: MenuCartCell) {
+    func didTapMinus(on cell: CartCell) {
         guard let indexPath = cartTableView.indexPath(for: cell) else { return }
         let cartItem = viewModel.getCartItems()[indexPath.row]
         if cartItem.amount <= 1 {

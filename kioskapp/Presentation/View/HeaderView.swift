@@ -13,13 +13,15 @@ import Then
 final class HeaderView: UIView {
     private let imageView = UIImageView()
     private let titleLabel = UILabel()
-        
+    private var viewModel: KioskMainViewModel
+    
     private let underLineView = UIView()
     let segmentedControl = CutomSegmentedControl()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: KioskMainViewModel) {
+        self.viewModel = viewModel
         
+        super.init(frame: .zero)
         setStyle()
         setUI()
         setLayout()
@@ -125,6 +127,7 @@ extension HeaderView {
         let segmentIndex = CGFloat(segmentedControl.selectedSegmentIndex)
         let segmentWidth = segmentedControl.frame.width / CGFloat(segmentedControl.numberOfSegments)
         let leading = segmentWidth * segmentIndex
+        viewModel.updateCategory(Int(segmentIndex))
         
         UIView.animate(withDuration: 0.3) { [weak self] in
             guard let self else { return }

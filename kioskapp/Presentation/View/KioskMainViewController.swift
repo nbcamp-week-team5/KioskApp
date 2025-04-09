@@ -58,6 +58,12 @@ class KioskMainController: UIViewController {
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(250)
         }
+        
+        footerView.snp.makeConstraints {
+            $0.top.equalTo(menuCartView.snp.bottom).offset(10)
+            $0.horizontalEdges.equalToSuperview().inset(10)
+            $0.bottom.equalToSuperview()
+        }
     }
 }
 

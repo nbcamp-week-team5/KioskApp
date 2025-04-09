@@ -21,10 +21,12 @@ final class FooterView: UIView {
     private let cancleButton = UIButton(type: .system)
     private let paymentButton = UIButton(type: .system)
     private let buttonStackView = UIStackView()
+    private var viewModel: KioskMainViewModel
     weak var delegate: FooterViewDelegate?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: KioskMainViewModel) {
+        self.viewModel = viewModel
+        super.init(frame: .zero)
         
         setStyle()
         setUI()
@@ -103,8 +105,8 @@ final class FooterView: UIView {
 }
 
 extension FooterView {
-    func configure(_ amount: Int) {
-        titleLabel.text = "\(amount)원"
+    func reloadAmount() {
+        amountLabel.text = "\(viewModel.getTotalCartItemPrice())원"
     }
 }
 
@@ -118,8 +120,4 @@ extension FooterView {
     private func didTapCancelButton() {
         delegate?.didTapCancelButton()
     }
-}
-
-#Preview {
-    FooterView()
 }

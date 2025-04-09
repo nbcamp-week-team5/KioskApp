@@ -92,3 +92,20 @@ class MenuView: UIView {
         currentIndex = page
     }
 }
+
+extension MenuView {
+    func reloadMenu() {
+        let newItems = viewModel.getMenuItems().menu[viewModel.getCategoryIndex()].items
+        self.menuItems = newItems
+      
+        delegate.menuItems = newItems
+        
+        pageControl.numberOfPages = Int(ceil(Double(newItems.count)) / 4.0)
+        pageControl.currentPage = 0
+        
+        menuCollectionView.setContentOffset(.zero, animated: false)
+        menuCollectionView.reloadData()
+        
+        self.layoutIfNeeded()
+    }
+}

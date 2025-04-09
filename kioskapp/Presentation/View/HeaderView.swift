@@ -13,13 +13,15 @@ import Then
 final class HeaderView: UIView {
     private let imageView = UIImageView()
     private let titleLabel = UILabel()
-        
+    private var viewModel: KioskMainViewModel
+    
     private let underLineView = UIView()
     let segmentedControl = CutomSegmentedControl()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: KioskMainViewModel) {
+        self.viewModel = viewModel
         
+        super.init(frame: .zero)
         setStyle()
         setUI()
         setLayout()
@@ -92,7 +94,7 @@ final class HeaderView: UIView {
     
     private func setLayout() {
         imageView.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(20)
+            $0.leading.equalToSuperview().inset(18)
             $0.top.equalTo(safeAreaLayoutGuide).offset(10)
             $0.size.equalTo(50)
         }
@@ -100,12 +102,12 @@ final class HeaderView: UIView {
         titleLabel.snp.makeConstraints {
             $0.leading.equalTo(imageView.snp.trailing).offset(10)
             $0.centerY.equalTo(imageView.snp.centerY)
-            $0.trailing.equalToSuperview().inset(20)
+            $0.trailing.equalToSuperview().inset(18)
         }
         
         segmentedControl.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(15)
-            $0.horizontalEdges.equalToSuperview().inset(20)
+            $0.horizontalEdges.equalToSuperview().inset(18)
             $0.height.equalTo(45)
         }
         
@@ -125,6 +127,7 @@ extension HeaderView {
         let segmentIndex = CGFloat(segmentedControl.selectedSegmentIndex)
         let segmentWidth = segmentedControl.frame.width / CGFloat(segmentedControl.numberOfSegments)
         let leading = segmentWidth * segmentIndex
+        viewModel.updateCategory(Int(segmentIndex))
         
         UIView.animate(withDuration: 0.3) { [weak self] in
             guard let self else { return }

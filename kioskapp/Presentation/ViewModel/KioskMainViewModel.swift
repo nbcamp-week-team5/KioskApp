@@ -14,15 +14,30 @@ class KioskMainViewModel {
             onCartItemsUpdated?(cartItems)
         }
     }
-
-    var onCartItemsUpdated: (([CartItem]) -> Void)? 
-
+    
+    private var selectedCategoryIndex: Int = 0 {
+        didSet {
+            onCategoryUPdated?(selectedCategoryIndex)
+        }
+    }
+    
+    var onCartItemsUpdated: (([CartItem]) -> Void)?
+    var onCategoryUPdated: ((Int) -> Void)?
+    
     init(menuUseCase: MenuUseCaseProtocol,cartUseCase: CartUseCaseProtocol) {
         self.menuUseCase = menuUseCase
         self.cartUseCase = cartUseCase
         fetchCartItems()
     }
+    
+    func updateCategory(_ category: Int) {
+        selectedCategoryIndex = category
+    }
 
+    func getCategoryIndex() -> Int {
+        selectedCategoryIndex
+    }
+    
     func getMenuItems() -> MenuData {
         menuUseCase.getMenuItems()
     }

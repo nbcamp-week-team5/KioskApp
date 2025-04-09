@@ -20,12 +20,11 @@ class MenuCartView: UIView {
     private let cartTitleLabel = UILabel()
     private let cartAmount = UILabel()
     
-    private let cartRepository: CartRepositoryProtocol
+    private var viewModel: KioskMainViewModel
     
-    init(cartRepository: CartRepositoryProtocol) {
-        self.cartRepository = cartRepository
+    init(viewModel: KioskMainViewModel) {
+        self.viewModel = viewModel
         super.init(frame: .zero)
-        
         setStyle()
         setUI()
         setLayout()
@@ -76,7 +75,7 @@ class MenuCartView: UIView {
         }
         
         cartAmount.do {
-            $0.text = "총 \(cartRepository.getCartItems().count)개"
+            $0.text = "총 \(viewModel.getCartItems().count)개"
             $0.font = .systemFont(ofSize: 20, weight: .medium)
             $0.textColor = .black
         }
@@ -127,11 +126,11 @@ class MenuCartView: UIView {
         cartTableView.reloadData()
         updateEmptyState()
         
-        let cartAmountValue = cartRepository.getCartItems().reduce(0) { $0 + $1.amount }
+        let cartAmountValue = viewModel.getCartItems().reduce(0) { $0 + $1.amount }
         cartAmount.text = "총 \(cartAmountValue)개"
                 
         if let cartItem = cartItem,
-           let selectedIndex = cartRepository.getCartItems().firstIndex(where: { $0.item.id == cartItem.item.id }) {
+           let selectedIndex = viewModel.getCartItems().firstIndex(where: { $0.item.id == cartItem.item.id }) {
             let indexPath = IndexPath(row: selectedIndex, section: 0)
             cartTableView.scrollToRow(at: indexPath, at: .top, animated: true)
         }
@@ -141,9 +140,9 @@ class MenuCartView: UIView {
     
     private func updateEmptyState() {
         UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
-            self.emptyLabel.isHidden = !self.cartRepository.getCartItems().isEmpty
-            self.cartTableView.isHidden = self.cartRepository.getCartItems().isEmpty
-            self.cartHeader.isHidden = self.cartRepository.getCartItems().isEmpty
+            self.emptyLabel.isHidden = !self.viewModel.getCartItems().isEmpty
+            self.cartTableView.isHidden = self.viewModel.getCartItems().isEmpty
+            self.cartHeader.isHidden = self.viewModel.getCartItems().isEmpty
         }, completion: nil)
     }
 }
@@ -156,14 +155,14 @@ extension MenuCartView: UITableViewDelegate {
 
 extension MenuCartView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cartRepository.getCartItems().count
+        return viewModel.getCartItems().count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MenuCartCell.identifier, for: indexPath) as? MenuCartCell else {
             return UITableViewCell()
         }
-        let cartItems = cartRepository.getCartItems()
+        let cartItems = viewModel.getCartItems()
         let cartItem = cartItems[indexPath.row]
         cell.configure(cartItem)
         cell.delegate = self
@@ -174,21 +173,18 @@ extension MenuCartView: UITableViewDataSource {
 extension MenuCartView: MenuCartCellDelegate {
     func didTapPlus(on cell: MenuCartCell) {
         guard let indexPath = cartTableView.indexPath(for: cell) else { return }
-        let item = cartRepository.getCartItems()[indexPath.row]
-        let updatedItem = CartItem(item: item.item, amount: item.amount + 1)
-        cartRepository.updateCartItem(updatedItem)
+        let cartItem = viewModel.getCartItems()[indexPath.row]
+        viewModel.increaseCartItemQuantity(cartItem)
         reloadCart()
-        print(cartRepository.getCartItems())
     }
     
     func didTapMinus(on cell: MenuCartCell) {
         guard let indexPath = cartTableView.indexPath(for: cell) else { return }
-        let item = cartRepository.getCartItems()[indexPath.row]
-        if item.amount <= 1 {
-            cartRepository.deleteCartItem(item.item.id)
+        let cartItem = viewModel.getCartItems()[indexPath.row]
+        if cartItem.amount <= 1 {
+            viewModel.deleteCartItem(cartItem)
         } else {
-            let updatedItem = CartItem(item: item.item, amount: item.amount - 1)
-            cartRepository.updateCartItem(updatedItem)
+            viewModel.decreaseCartItemQuantity(cartItem)
         }
         reloadCart()
     }

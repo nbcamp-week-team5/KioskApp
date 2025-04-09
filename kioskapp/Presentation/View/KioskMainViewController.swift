@@ -3,25 +3,40 @@ import SnapKit
 import Then
 
 class KioskMainController: UIViewController {
-    private let cartRepository: CartRepositoryProtocol = CartRepository()
-    private lazy var menuCartView = MenuCartView(cartRepository: cartRepository)
-    private lazy var menuView = MenuView(
-        frame: .zero,
-        viewModel: KioskMainViewModel(
-            menuUseCase: MenuUseCase(menuRepository: MenuRepository()),
-            cartUseCase: CartUseCase(cartRepository: cartRepository)
-        ),
-        menuCartView: menuCartView
-    )
+    
+    private let sharedCartRepository = CartRepository()
+
+    private var menuCartView: MenuCartView!
+    private var viewModel: KioskMainViewModel!
+    
+    private lazy var menuView: MenuView = {
+        let view = MenuView()
+        view.delegate = self
+        return view
+    }()
     
     private let contentStack = UIStackView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupDependencies()
+        bindViewModel()
         setStyle()
         setUI()
         setLayout()
+    }
+    
+    private func setupDependencies() {
+        viewModel = KioskMainViewModel(
+            menuUseCase: MenuUseCase(menuRepository: MenuRepository()),
+            cartUseCase: CartUseCase(cartRepository: sharedCartRepository)
+        )
+        menuCartView = MenuCartView(viewModel: viewModel)
+    }
+    
+    private func bindViewModel() {
+        menuView.menuItems = viewModel.getMenuItems().menu[0].items
     }
     
     private func setStyle() {
@@ -60,6 +75,10 @@ class KioskMainController: UIViewController {
     }
 }
 
-#Preview {
-    KioskMainController()
+extension KioskMainController: MenuViewDelegate {
+    func addCartItem(menuItem item: MenuItem) {
+        let cartItem = CartItem(item: item.item, amount: 1)
+        viewModel.addCartItem(cartItem, by: 1)
+        menuCartView.reloadCart(cartItem)
+    }
 }

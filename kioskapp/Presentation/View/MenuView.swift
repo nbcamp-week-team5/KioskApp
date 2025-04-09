@@ -9,15 +9,18 @@ import UIKit
 import SnapKit
 import Then
 
+protocol MenuViewDelegate: AnyObject {
+    func addCartItem(menuItem item: MenuItem)
+}
+
 class MenuView: UIView {
+    weak var delegate: MenuViewDelegate?
     
-    let menuData = MenuDataFactory.makeMenuData().menu[0]
-    
+    var menuItems: [MenuItem] = []
+        
     var currentIndex: Int = 0
     
-    private let viewModel: KioskMainViewModel
     private let pageControl = UIPageControl()
-    private weak var menuCartView: MenuCartView?
     
     private let menuCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.scrollDirection = .horizontal
@@ -25,9 +28,7 @@ class MenuView: UIView {
         $0.minimumInteritemSpacing = 0
     })
     
-    init(frame: CGRect, viewModel: KioskMainViewModel, menuCartView: MenuCartView) {
-        self.viewModel = viewModel
-        self.menuCartView = menuCartView
+    override init(frame: CGRect) {
         super.init(frame: frame)
         setStyle()
         setUI()
@@ -56,7 +57,7 @@ class MenuView: UIView {
             $0.addTarget(self, action: #selector(pageControlTapped(_:)), for: .valueChanged)
         }
         
-        pageControl.numberOfPages = Int(ceil(Double(menuData.items.count) / 4.0))
+        pageControl.numberOfPages = Int(ceil(Double(menuItems.count) / 4.0))
     }
     
     private func setUI() {
@@ -89,14 +90,14 @@ extension MenuView: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int { 1 }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return menuData.items.count
+        return menuItems.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuItemCell", for: indexPath) as? MenuItemCell else {
             fatalError("Failed to load cell!")
         }
-        let item = menuData.items[indexPath.item]
+        let item = menuItems[indexPath.item]
         cell.configure(with: item)
         return cell
     }
@@ -114,10 +115,8 @@ extension MenuView: UICollectionViewDataSource, UICollectionViewDelegate {
             }
         })
         
-        let item = menuData.items[indexPath.item]
-        let cartItem = CartItem(item: item.item, amount: 1)
-        viewModel.addCartItem(cartItem, by: 1)
-        menuCartView?.reloadCart(cartItem)
+        let menuItem = menuItems[indexPath.item]
+        delegate?.addCartItem(menuItem: menuItem)
     }
 }
 
@@ -155,7 +154,7 @@ extension MenuView: UIScrollViewDelegate {
             currentIndex = Int(round(estimatedIndex))
         }
         
-        let maxIndex = max(0, (menuData.items.count - 1) / 4)
+        let maxIndex = max(0, (menuItems.count - 1) / 4)
         currentIndex = min(maxIndex, max(0, currentIndex))
         
         let xOffset = CGFloat(currentIndex) * pageWidth

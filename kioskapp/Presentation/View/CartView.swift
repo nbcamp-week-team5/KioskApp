@@ -127,7 +127,7 @@ class CartView: UIView {
         
         let cartAmountValue = viewModel.getCartItems().reduce(0) { $0 + $1.amount }
         cartAmount.text = "총 \(cartAmountValue)개"
-                
+        
         if let cartItem = cartItem,
            let selectedIndex = viewModel.getCartItems().firstIndex(
             where: { $0.item.id == cartItem.item.id }

@@ -17,12 +17,12 @@ class KioskMainViewModel {
     
     private var selectedCategoryIndex: Int = 0 {
         didSet {
-            onCategoryUPdated?(selectedCategoryIndex)
+            onCategoryUpdated?(selectedCategoryIndex)
         }
     }
     
     var onCartItemsUpdated: (([CartItem]) -> Void)?
-    var onCategoryUPdated: ((Int) -> Void)?
+    var onCategoryUpdated: ((Int) -> Void)?
     
     init(menuUseCase: MenuUseCaseProtocol,cartUseCase: CartUseCaseProtocol) {
         self.menuUseCase = menuUseCase

@@ -43,6 +43,7 @@ final class FooterView: UIView {
         }
         
         amountLabel.do {
+            $0.text = "0원"
             $0.font = .systemFont(ofSize: 20, weight: .black)
             $0.textColor = .black
         }
@@ -83,18 +84,18 @@ final class FooterView: UIView {
     
     private func setLayout() {
         titleLabel.snp.makeConstraints {
-            $0.horizontalEdges.equalToSuperview().inset(20)
-            $0.top.equalToSuperview()
+            $0.leading.equalToSuperview().inset(18)
+            $0.centerY.equalTo(amountLabel.snp.centerY)
         }
         
         amountLabel.snp.makeConstraints {
-            $0.centerY.equalTo(titleLabel.snp.centerY)
-            $0.trailing.equalToSuperview().inset(20)
+            $0.top.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(18)
         }
         
         buttonStackView.snp.makeConstraints {
-            $0.top.equalTo(amountLabel.snp.bottom).offset(6)
-            $0.horizontalEdges.equalToSuperview().inset(20)
+            $0.top.equalTo(amountLabel.snp.bottom).offset(18)
+            $0.horizontalEdges.equalToSuperview().inset(18)
             $0.height.equalTo(40)
             $0.bottom.equalToSuperview()
         }

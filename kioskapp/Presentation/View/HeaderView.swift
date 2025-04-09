@@ -92,7 +92,7 @@ final class HeaderView: UIView {
     
     private func setLayout() {
         imageView.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(20)
+            $0.leading.equalToSuperview().inset(18)
             $0.top.equalTo(safeAreaLayoutGuide).offset(10)
             $0.size.equalTo(50)
         }
@@ -100,12 +100,12 @@ final class HeaderView: UIView {
         titleLabel.snp.makeConstraints {
             $0.leading.equalTo(imageView.snp.trailing).offset(10)
             $0.centerY.equalTo(imageView.snp.centerY)
-            $0.trailing.equalToSuperview().inset(20)
+            $0.trailing.equalToSuperview().inset(18)
         }
         
         segmentedControl.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(15)
-            $0.horizontalEdges.equalToSuperview().inset(20)
+            $0.horizontalEdges.equalToSuperview().inset(18)
             $0.height.equalTo(45)
         }
         

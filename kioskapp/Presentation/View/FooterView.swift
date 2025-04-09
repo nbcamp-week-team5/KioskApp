@@ -21,10 +21,12 @@ final class FooterView: UIView {
     private let cancleButton = UIButton(type: .system)
     private let paymentButton = UIButton(type: .system)
     private let buttonStackView = UIStackView()
+    private var viewModel: KioskMainViewModel
     weak var delegate: FooterViewDelegate?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: KioskMainViewModel) {
+        self.viewModel = viewModel
+        super.init(frame: .zero)
         
         setStyle()
         setUI()
@@ -43,6 +45,7 @@ final class FooterView: UIView {
         }
         
         amountLabel.do {
+            $0.text = "0원"
             $0.font = .systemFont(ofSize: 20, weight: .black)
             $0.textColor = .black
         }
@@ -83,18 +86,18 @@ final class FooterView: UIView {
     
     private func setLayout() {
         titleLabel.snp.makeConstraints {
-            $0.horizontalEdges.equalToSuperview().inset(20)
-            $0.top.equalToSuperview()
+            $0.leading.equalToSuperview().inset(18)
+            $0.centerY.equalTo(amountLabel.snp.centerY)
         }
         
         amountLabel.snp.makeConstraints {
-            $0.centerY.equalTo(titleLabel.snp.centerY)
-            $0.trailing.equalToSuperview().inset(20)
+            $0.top.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(18)
         }
         
         buttonStackView.snp.makeConstraints {
-            $0.top.equalTo(amountLabel.snp.bottom).offset(6)
-            $0.horizontalEdges.equalToSuperview().inset(20)
+            $0.top.equalTo(amountLabel.snp.bottom).offset(18)
+            $0.horizontalEdges.equalToSuperview().inset(18)
             $0.height.equalTo(40)
             $0.bottom.equalToSuperview()
         }
@@ -102,8 +105,8 @@ final class FooterView: UIView {
 }
 
 extension FooterView {
-    func configure(_ amount: Int) {
-        titleLabel.text = "\(amount)원"
+    func reloadAmount() {
+        amountLabel.text = "\(viewModel.getTotalCartItemPrice())원"
     }
 }
 
@@ -117,8 +120,4 @@ extension FooterView {
     private func didTapCancelButton() {
         delegate?.didTapCancelButton()
     }
-}
-
-#Preview {
-    FooterView()
 }

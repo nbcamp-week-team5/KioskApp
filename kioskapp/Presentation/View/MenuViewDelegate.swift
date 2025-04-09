@@ -11,7 +11,7 @@ final class MenuViewDelegate: NSObject {
     private let viewModel: KioskMainViewModel
     private let pageControl: UIPageControl
     private let menuCollectionView: UICollectionView
-    private let menuItems: [MenuItem]
+    var menuItems: [MenuItem]
     private(set) var currentIndex: Int = 0
 
     init(viewModel: KioskMainViewModel,

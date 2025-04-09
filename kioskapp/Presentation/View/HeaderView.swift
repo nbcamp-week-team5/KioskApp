@@ -11,11 +11,11 @@ import SnapKit
 import Then
 
 final class HeaderView: UIView {
-    let imageView = UIImageView()
-    let titleLabel = UILabel()
-    
+    private let imageView = UIImageView()
+    private let titleLabel = UILabel()
+        
+    private let underLineView = UIView()
     let segmentedControl = CutomSegmentedControl()
-    let underLineView = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -92,7 +92,7 @@ final class HeaderView: UIView {
     
     private func setLayout() {
         imageView.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(16)
+            $0.leading.equalToSuperview().inset(20)
             $0.top.equalTo(safeAreaLayoutGuide).offset(10)
             $0.size.equalTo(50)
         }
@@ -100,12 +100,12 @@ final class HeaderView: UIView {
         titleLabel.snp.makeConstraints {
             $0.leading.equalTo(imageView.snp.trailing).offset(10)
             $0.centerY.equalTo(imageView.snp.centerY)
-            $0.trailing.equalToSuperview().inset(16)
+            $0.trailing.equalToSuperview().inset(20)
         }
         
         segmentedControl.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(15)
-            $0.horizontalEdges.equalToSuperview().inset(16)
+            $0.horizontalEdges.equalToSuperview().inset(20)
             $0.height.equalTo(45)
         }
         

@@ -3,7 +3,6 @@ import SnapKit
 import Then
 
 class KioskMainController: UIViewController {
-    
     private let cartRepository: CartRepositoryProtocol = CartRepository()
     private lazy var menuCartView = MenuCartView(cartRepository: cartRepository)
     private lazy var menuView = MenuView(
@@ -57,12 +56,6 @@ class KioskMainController: UIViewController {
             $0.top.equalTo(menuView.snp.bottom)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(250)
-        }
-        
-        footerView.snp.makeConstraints {
-            $0.top.equalTo(menuCartView.snp.bottom).offset(10)
-            $0.horizontalEdges.equalToSuperview().inset(10)
-            $0.bottom.equalToSuperview()
         }
     }
 }

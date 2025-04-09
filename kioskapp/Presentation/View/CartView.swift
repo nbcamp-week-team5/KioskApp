@@ -21,8 +21,11 @@ class CartView: UIView {
     
     private var viewModel: KioskMainViewModel
     
+    private let delegate: CartViewDelegate
+    
     init(viewModel: KioskMainViewModel) {
         self.viewModel = viewModel
+        self.delegate = CartViewDelegate(viewModel: viewModel, cartTableView: cartTableView)
         super.init(frame: .zero)
         setStyle()
         setUI()
@@ -41,8 +44,8 @@ class CartView: UIView {
         }
         
         cartTableView.do {
-            $0.delegate = self
-            $0.dataSource = self
+            $0.delegate = delegate
+            $0.dataSource = delegate
             $0.register(CartCell.self, forCellReuseIdentifier: CartCell.identifier)
             $0.separatorStyle = .singleLine
             $0.backgroundColor = .white
@@ -126,7 +129,9 @@ class CartView: UIView {
         cartAmount.text = "총 \(cartAmountValue)개"
                 
         if let cartItem = cartItem,
-           let selectedIndex = viewModel.getCartItems().firstIndex(where: { $0.item.id == cartItem.item.id }) {
+           let selectedIndex = viewModel.getCartItems().firstIndex(
+            where: { $0.item.id == cartItem.item.id }
+           ) {
             let indexPath = IndexPath(row: selectedIndex, section: 0)
             cartTableView.scrollToRow(at: indexPath, at: .top, animated: true)
         }
@@ -140,46 +145,5 @@ class CartView: UIView {
             self.cartTableView.isHidden = self.viewModel.getCartItems().isEmpty
             self.cartHeader.isHidden = self.viewModel.getCartItems().isEmpty
         }, completion: nil)
-    }
-}
-
-extension CartView: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 40
-    }
-}
-
-extension CartView: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.getCartItems().count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CartCell.identifier, for: indexPath) as? CartCell else {
-            return UITableViewCell()
-        }
-        let cartItems = viewModel.getCartItems()
-        let cartItem = cartItems[indexPath.row]
-        cell.configure(cartItem)
-        cell.delegate = self
-        return cell
-    }
-}
-
-extension CartView: MenuCartCellDelegate {
-    func didTapPlus(on cell: CartCell) {
-        guard let indexPath = cartTableView.indexPath(for: cell) else { return }
-        let cartItem = viewModel.getCartItems()[indexPath.row]
-        viewModel.increaseCartItemQuantity(cartItem)
-    }
-    
-    func didTapMinus(on cell: CartCell) {
-        guard let indexPath = cartTableView.indexPath(for: cell) else { return }
-        let cartItem = viewModel.getCartItems()[indexPath.row]
-        if cartItem.amount <= 1 {
-            viewModel.deleteCartItem(cartItem)
-        } else {
-            viewModel.decreaseCartItemQuantity(cartItem)
-        }
     }
 }

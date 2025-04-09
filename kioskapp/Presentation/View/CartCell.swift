@@ -134,7 +134,3 @@ class CartCell: UITableViewCell {
         quantityLabel.text = "\(item.amount)"
     }
 }
-
-#Preview {
-    MenuCell()
-}

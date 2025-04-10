@@ -29,7 +29,7 @@ class KioskMainController: UIViewController {
         setUI()
         setLayout()        
     }
-    
+        
     private func bindViewModel() {
         viewModel.onCartItemsUpdated = { [weak self] _ in
             guard let self else { return }
@@ -37,7 +37,7 @@ class KioskMainController: UIViewController {
             self.footerView.reloadAmount()
         }
         
-        viewModel.onCategoryUPdated = { [weak self] _ in
+        viewModel.onCategoryUpdated = { [weak self] _ in
             guard let self else { return }
             self.menuView.reloadMenu()
         }

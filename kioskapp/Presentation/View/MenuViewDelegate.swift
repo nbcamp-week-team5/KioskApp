@@ -11,17 +11,20 @@ final class MenuViewDelegate: NSObject {
     private let viewModel: KioskMainViewModel
     private let pageControl: UIPageControl
     private let menuCollectionView: UICollectionView
+    private let cartView: CartView
     var menuItems: [MenuItem]
     private(set) var currentIndex: Int = 0
-
+    
     init(viewModel: KioskMainViewModel,
          pageControl: UIPageControl,
          menuCollectionView: UICollectionView,
-         menuItems: [MenuItem]) {
+         menuItems: [MenuItem],
+         cartView: CartView) {
         self.viewModel = viewModel
         self.pageControl = pageControl
         self.menuCollectionView = menuCollectionView
         self.menuItems = menuItems
+        self.cartView = cartView
     }
 }
 
@@ -59,6 +62,7 @@ extension MenuViewDelegate: UICollectionViewDataSource, UICollectionViewDelegate
         let menuItem = menuItems[indexPath.item]
         let cartItem = CartItem(item: menuItem.item, amount: 1)
         viewModel.addCartItem(cartItem, by: 1)
+        cartView.reloadCart(cartItem)
     }
 }
 

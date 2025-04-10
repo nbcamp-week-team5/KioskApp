@@ -27,9 +27,9 @@ class KioskMainController: UIViewController {
         bindViewModel()
         setStyle()
         setUI()
-        setLayout()        
+        setLayout()
     }
-        
+    
     private func bindViewModel() {
         viewModel.onCartItemsUpdated = { [weak self] _ in
             guard let self else { return }
@@ -47,26 +47,34 @@ class KioskMainController: UIViewController {
         contentStack.do {
             $0.axis = .vertical
         }
-
+        
         scrollView.do {
             $0.showsVerticalScrollIndicator = false
             $0.showsHorizontalScrollIndicator = false
             $0.alwaysBounceVertical = true
+        }
+        
+        footerView.do {
+            $0.backgroundColor = .white
+            let border = CALayer()
+            border.backgroundColor = UIColor.systemGray5.cgColor
+            border.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 2)
+            $0.layer.addSublayer(border)
         }
     }
     
     private func setUI() {
         view.backgroundColor = .white
         view.addSubview(headerView)
-        view.addSubview(contentStack)
+        view.addSubview(scrollView)
+        view.addSubview(footerView)
         
-        [menuView, cartView, footerView].forEach {
+        [menuView, cartView].forEach {
             contentStack.addArrangedSubview($0)
         }
         contentStack.setCustomSpacing(18, after: cartView)
         
         scrollView.addSubview(contentStack)
-        view.addSubview(scrollView)
     }
     
     private func setLayout() {
@@ -78,7 +86,7 @@ class KioskMainController: UIViewController {
         scrollView.snp.makeConstraints {
             $0.top.equalTo(headerView.snp.bottom).offset(2)
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalTo(footerView.snp.top)
         }
         
         contentStack.snp.makeConstraints {
@@ -93,7 +101,12 @@ class KioskMainController: UIViewController {
         
         cartView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(250)
+            $0.height.equalTo(200)
+        }
+        
+        footerView.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.height.equalTo(100)
         }
     }
 }

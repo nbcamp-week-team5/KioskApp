@@ -54,7 +54,7 @@ class CartCell: UITableViewCell {
         
         minusButton.do {
             $0.setImage(UIImage(systemName: "minus.circle.fill"), for: .normal)
-            $0.tintColor = .systemGray
+            $0.tintColor = .systemGray2
             $0.contentVerticalAlignment = .fill
             $0.contentHorizontalAlignment = .fill
             $0.addTarget(self, action: #selector(minusClicked), for: .touchUpInside)
@@ -63,7 +63,7 @@ class CartCell: UITableViewCell {
         
         plusButton.do {
             $0.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
-            $0.tintColor = .systemGray
+            $0.tintColor = .systemGray2
             $0.contentVerticalAlignment = .fill
             $0.contentHorizontalAlignment = .fill
             $0.addTarget(self, action: #selector(plusClicked), for: .touchUpInside)

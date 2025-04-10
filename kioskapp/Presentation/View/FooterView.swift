@@ -63,7 +63,7 @@ final class FooterView: UIView {
             $0.setTitle("주문 하기", for: .normal)
             $0.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
             $0.layer.cornerRadius = 15
-            $0.setTitleColor(.white, for: .normal)
+            $0.setTitleColor(.black, for: .normal)
             $0.backgroundColor = .systemYellow
             $0.addTarget(self, action: #selector(didTapPaymentButton), for: .touchUpInside)
         }
@@ -87,13 +87,13 @@ final class FooterView: UIView {
     private func setLayout() {
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(4)
-            $0.leading.equalToSuperview().inset(24)
+            $0.leading.equalToSuperview().inset(22)
             $0.centerY.equalTo(amountLabel.snp.centerY)
         }
         
         amountLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(4)
-            $0.trailing.equalToSuperview().inset(24)
+            $0.trailing.equalToSuperview().inset(22)
         }
         
         buttonStackView.snp.makeConstraints {

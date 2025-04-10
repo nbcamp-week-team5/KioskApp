@@ -59,8 +59,7 @@ class MenuView: UIView {
             $0.delegate = delegate
             $0.showsHorizontalScrollIndicator = false
             $0.register(MenuCell.self, forCellWithReuseIdentifier: "MenuItemCell")
-            $0.layer.borderColor = UIColor.lightGray.cgColor
-            $0.layer.borderWidth = 1.0
+            
             $0.layer.cornerRadius = 20
         }
         

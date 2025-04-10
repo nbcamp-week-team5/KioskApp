@@ -44,22 +44,26 @@ class KioskMainController: UIViewController {
     }
     
     private func setStyle() {
+        
+        
         contentStack.do {
             $0.axis = .vertical
+            $0.backgroundColor = .systemGray6
         }
         
         scrollView.do {
             $0.showsVerticalScrollIndicator = false
             $0.showsHorizontalScrollIndicator = false
             $0.alwaysBounceVertical = true
+            $0.backgroundColor = .systemGray6
         }
         
         footerView.do {
             $0.backgroundColor = .white
-            let border = CALayer()
-            border.backgroundColor = UIColor.systemGray5.cgColor
-            border.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 2)
-            $0.layer.addSublayer(border)
+            $0.layer.shadowColor = UIColor.gray.cgColor
+            $0.layer.shadowOpacity = 0.1
+            $0.layer.shadowOffset = CGSize(width: 0, height: -2)
+            $0.layer.shadowRadius = 1
         }
     }
     
@@ -101,7 +105,7 @@ class KioskMainController: UIViewController {
         
         cartView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(200)
+            $0.height.equalTo(206)
         }
         
         footerView.snp.makeConstraints {

@@ -46,7 +46,6 @@ class KioskMainController: UIViewController {
     private func setStyle() {
         contentStack.do {
             $0.axis = .vertical
-            $0.spacing = 10
         }
 
         scrollView.do {
@@ -64,6 +63,7 @@ class KioskMainController: UIViewController {
         [menuView, cartView, footerView].forEach {
             contentStack.addArrangedSubview($0)
         }
+        contentStack.setCustomSpacing(18, after: cartView)
         
         scrollView.addSubview(contentStack)
         view.addSubview(scrollView)

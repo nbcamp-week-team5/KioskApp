@@ -34,15 +34,20 @@ extension MenuViewDelegate: UICollectionViewDataSource, UICollectionViewDelegate
     func numberOfSections(in collectionView: UICollectionView) -> Int { 1 }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return menuItems.count
+        return Int(ceil(Double(menuItems.count) / 4.0)) * 4
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuItemCell", for: indexPath) as? MenuCell else {
             fatalError("Failed to load cell!")
         }
-        let item = menuItems[indexPath.item]
-        cell.configure(with: item)
+        
+        if indexPath.item >= menuItems.count {
+            cell.isHidden = true
+        } else {
+            cell.isHidden = false
+            cell.configure(with: menuItems[indexPath.item])
+        }
         return cell
     }
     
@@ -100,7 +105,7 @@ extension MenuViewDelegate: UIScrollViewDelegate {
             currentIndex = Int(round(estimatedIndex))
         }
         
-        let maxIndex = max(0, (menuItems.count - 1) / 4)
+        let maxIndex = max(0, Int(ceil(Double(menuItems.count)) / 4.0))
         currentIndex = min(maxIndex, max(0, currentIndex))
         
         let xOffset = CGFloat(currentIndex) * pageWidth

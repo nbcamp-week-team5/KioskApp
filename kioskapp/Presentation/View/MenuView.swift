@@ -9,9 +9,9 @@ import UIKit
 import SnapKit
 import Then
 
-class MenuView: UIView {    
+class MenuView: UIView {
     var menuItems: [MenuItem]
-        
+    
     var currentIndex: Int = 0
     
     private let pageControl = UIPageControl()
@@ -29,14 +29,19 @@ class MenuView: UIView {
     
     private var delegate: MenuViewDelegate
     
-    init(viewModel: KioskMainViewModel,menuItems: [MenuItem]) {
+    init(
+        viewModel: KioskMainViewModel,
+        menuItems: [MenuItem],
+        cartView: CartView
+    ) {
         self.viewModel = viewModel
         self.menuItems = menuItems
         self.delegate = MenuViewDelegate(
             viewModel: viewModel,
             pageControl: pageControl,
             menuCollectionView: menuCollectionView,
-            menuItems: menuItems
+            menuItems: menuItems,
+            cartView: cartView
         )
         super.init(frame: .zero)
         setStyle()
@@ -97,7 +102,7 @@ extension MenuView {
     func reloadMenu() {
         let newItems = viewModel.getMenuItems().menu[viewModel.getCategoryIndex()].items
         self.menuItems = newItems
-      
+        
         delegate.menuItems = newItems
         
         pageControl.numberOfPages = Int(ceil(Double(newItems.count)) / 4.0)

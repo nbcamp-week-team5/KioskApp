@@ -10,7 +10,7 @@ class KioskMainController: UIViewController {
     )
     private lazy var menuView = MenuView(
         viewModel: viewModel,
-        menuItems: viewModel.getMenuItems().menu[0].items
+        menuItems: viewModel.getMenuItems().menu[0].items, cartView: cartView
     )
     private lazy var headerView = HeaderView(viewModel: viewModel)
     private lazy var footerView = FooterView(viewModel: viewModel)

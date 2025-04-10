@@ -58,7 +58,6 @@ class CartView: UIView {
             $0.isHidden = false
         }
     
-        
         cartAmount.do {
             $0.text = "총 \(viewModel.getCartItems().count)개"
             $0.font = .systemFont(ofSize: 16, weight: .bold)

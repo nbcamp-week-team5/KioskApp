@@ -3,23 +3,36 @@ import SnapKit
 import Then
 
 class KioskMainController: UIViewController {
-    
     private let viewModel = KioskMainViewModel(
         menuUseCase: MenuUseCase(menuRepository: MenuRepository()),
         cartUseCase: CartUseCase(cartRepository: CartRepository())
     )
+    
     private lazy var menuView = MenuView(
         viewModel: viewModel,
-        menuItems: viewModel.getMenuItems().menu[0].items, cartView: cartView
+        menuItems: viewModel.getMenuItems().menu[0].items,
+        cartView: cartView
     )
+    
     private lazy var headerView = HeaderView(viewModel: viewModel)
-    private lazy var footerView = FooterView(viewModel: viewModel)
-    private let scrollView = UIScrollView()
+    
+    private lazy var footerView = FooterView(viewModel: viewModel).then {
+        $0.delegate = self
+    }
+    
     private lazy var cartView = CartView(viewModel: viewModel)
     
-    private let contentStack = UIStackView()
+    private let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+        $0.alwaysBounceVertical = true
+        $0.backgroundColor = .systemGray6
+    }
     
-    private var alert: UIAlertController? = nil
+    private let contentStack = UIStackView().then {
+        $0.axis = .vertical
+        $0.backgroundColor = .systemGray6
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,20 +57,6 @@ class KioskMainController: UIViewController {
     }
     
     private func setStyle() {
-        
-        
-        contentStack.do {
-            $0.axis = .vertical
-            $0.backgroundColor = .systemGray6
-        }
-        
-        scrollView.do {
-            $0.showsVerticalScrollIndicator = false
-            $0.showsHorizontalScrollIndicator = false
-            $0.alwaysBounceVertical = true
-            $0.backgroundColor = .systemGray6
-        }
-        
         footerView.do {
             $0.backgroundColor = .white
             $0.layer.shadowColor = UIColor.gray.cgColor
@@ -116,11 +115,17 @@ class KioskMainController: UIViewController {
 }
 
 extension KioskMainController {
-    private func showAlert() {
-        guard let alert else { return }
+    private func showAlert(title: String, message: String, completion: (() -> Void)? = nil) {
+        let alert = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
+        
         alert.addAction(UIAlertAction(title: "확인", style: .default, handler: { _ in
-            self.viewModel.removeAllCartItems()
+            completion?()
         }))
+        
         present(alert, animated: true, completion: nil)
     }
 }
@@ -128,20 +133,16 @@ extension KioskMainController {
 extension KioskMainController: FooterViewDelegate {
     func didTapPaymentButton() {
         if !viewModel.getCartItems().isEmpty {
-            alert = UIAlertController(
+            showAlert(
                 title: "성공",
-                message: "상품 주문이 완료되었습니다.",
-                preferredStyle: .alert
+                message: "결제가 완료되었습니다."
             )
         } else {
-            alert = UIAlertController(
+            showAlert(
                 title: "실패",
-                message: "장바구니가 비어있습니다.",
-                preferredStyle: .alert
+                message: "장바구니가 비어있습니다."
             )
         }
-        
-        showAlert()
     }
     
     func didTapCancelButton() {

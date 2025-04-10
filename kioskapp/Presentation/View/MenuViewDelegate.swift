@@ -37,8 +37,13 @@ extension MenuViewDelegate: UICollectionViewDataSource, UICollectionViewDelegate
         return Int(ceil(Double(menuItems.count) / 4.0)) * 4
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuItemCell", for: indexPath) as? MenuCell else {
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
+    {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "MenuItemCell",
+            for: indexPath) as? MenuCell else
+        {
             fatalError("Failed to load cell!")
         }
         

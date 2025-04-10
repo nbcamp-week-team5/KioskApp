@@ -105,8 +105,12 @@ extension MenuView {
         
         delegate.menuItems = newItems
         
-        pageControl.numberOfPages = Int(ceil(Double(newItems.count)) / 4.0) + 1
-        pageControl.currentPage = 0
+        pageControl.isHidden = newItems.count <= 4 ? true : false
+        
+        if !pageControl.isHidden {
+            pageControl.numberOfPages = Int(ceil(Double(newItems.count)) / 4.0) + 1
+            pageControl.currentPage = 0
+        }
         
         menuCollectionView.setContentOffset(.zero, animated: false)
         menuCollectionView.reloadData()

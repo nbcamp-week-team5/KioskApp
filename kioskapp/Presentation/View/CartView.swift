@@ -60,6 +60,7 @@ class CartView: UIView {
             $0.font = .systemFont(ofSize: 16, weight: .medium)
             $0.text = "장바구니가 비어 있습니다."
             $0.isHidden = true
+            $0.isHidden = false
         }
         
         cartHeader.do {

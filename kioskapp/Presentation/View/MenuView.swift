@@ -71,7 +71,7 @@ class MenuView: UIView {
             $0.addTarget(self, action: #selector(pageControlTapped(_:)), for: .valueChanged)
         }
         
-        pageControl.numberOfPages = Int(ceil(Double(menuItems.count)) / 4.0) + 1
+        pageControl.numberOfPages = Int(ceil(Double(menuItems.count) / 4.0))
     }
     
     private func setUI() {
@@ -108,13 +108,11 @@ extension MenuView {
         pageControl.isHidden = newItems.count <= 4 ? true : false
         
         if !pageControl.isHidden {
-            pageControl.numberOfPages = Int(ceil(Double(newItems.count)) / 4.0) + 1
+            pageControl.numberOfPages = Int(ceil(Double(menuItems.count) / 4.0))
             pageControl.currentPage = 0
         }
         
         menuCollectionView.setContentOffset(.zero, animated: false)
         menuCollectionView.reloadData()
-        
-        self.layoutIfNeeded()
     }
 }

@@ -119,7 +119,6 @@ class CartView: UIView {
     private func updateEmptyState() {
         UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
             self.emptyLabel.isHidden = !self.viewModel.getCartItems().isEmpty
-            self.cartTableView.isHidden = self.viewModel.getCartItems().isEmpty
             self.cartHeader.isHidden = self.viewModel.getCartItems().isEmpty
         }, completion: nil)
     }

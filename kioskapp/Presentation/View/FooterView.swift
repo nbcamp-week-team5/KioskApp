@@ -86,13 +86,13 @@ final class FooterView: UIView {
     
     private func setLayout() {
         titleLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(18)
+            $0.leading.equalToSuperview().inset(24)
             $0.centerY.equalTo(amountLabel.snp.centerY)
         }
         
         amountLabel.snp.makeConstraints {
             $0.top.equalToSuperview()
-            $0.trailing.equalToSuperview().inset(18)
+            $0.trailing.equalToSuperview().inset(24)
         }
         
         buttonStackView.snp.makeConstraints {
